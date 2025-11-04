@@ -1,6 +1,7 @@
 import { locales, defaultLocale, type Locale } from '@/i18n/config';
 import { getDictionary } from '@/i18n/getDictionary';
 import { DictProvider } from '@/i18n/DictContext';
+import HtmlLangSetter from './HtmlLangSetter';
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -18,7 +19,13 @@ export default async function LocaleLayout({
     ? (incoming as Locale)
     : defaultLocale;
   const dict = await getDictionary(locale);
-  return <DictProvider value={{ locale, dict }}>{children}</DictProvider>;
+
+  return (
+    <>
+      <HtmlLangSetter locale={locale} />
+      <DictProvider value={{ locale, dict }}>{children}</DictProvider>
+    </>
+  );
 }
 
 
