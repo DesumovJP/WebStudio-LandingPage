@@ -5,13 +5,11 @@ export default [
   {
     name: 'strapi::cors',
     config: {
-      enabled: true,
       origin: [
         'http://localhost:3000',
         'http://localhost:3001',
-        process.env.FRONTEND_URL,
-        process.env.NEXT_PUBLIC_SITE_URL,
-      ].filter(Boolean),
+        'https://webstudio-landingpage.vercel.app', // ← твій Vercel домен
+      ],
       credentials: true,
     },
   },
