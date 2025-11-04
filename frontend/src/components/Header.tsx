@@ -4,8 +4,9 @@ import Link from "next/link";
 import { AppBar, Toolbar, Button, IconButton, Drawer, List, ListItem, ListItemButton, ListItemText } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useDict } from "@/i18n/DictContext";
+import { usePathname, useSearchParams, useRouter } from "next/navigation";
 
 export default function Header() {
   const { locale, dict } = useDict();
@@ -17,6 +18,19 @@ export default function Header() {
     { href: "#process", label: dict.nav.process },
     { href: "#contact", label: dict.nav.contact },
   ];
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const switchLocale = useCallback((target: 'uk' | 'en') => (e?: React.MouseEvent) => {
+    if (e) e.preventDefault();
+    const current = pathname || `/${locale}`;
+    const rest = current.replace(/^\/(uk|en)/, "");
+    const query = searchParams?.toString();
+    const href = `/${target}${rest}${query ? `?${query}` : ""}`;
+    router.push(href);
+    setOpen(false);
+  }, [pathname, searchParams, router, locale]);
   return (
     <AppBar position="sticky" color="transparent" elevation={0} className="header">
       <Toolbar className="container header-toolbar">
@@ -30,9 +44,9 @@ export default function Header() {
           ))}
           <Button href={`/${locale}#contact`} color="inherit" variant="outlined" className="glass">{dict.nav.contact}</Button>
           <div className="lang-switch">
-            <Link className={`lang-btn ${locale === 'uk' ? 'active' : ''}`} href={`/uk`}>Укр</Link>
+            <a className={`lang-btn ${locale === 'uk' ? 'active' : ''}`} href={`/uk`} onClick={switchLocale('uk')}>Укр</a>
             <span className="lang-sep">/</span>
-            <Link className={`lang-btn ${locale === 'en' ? 'active' : ''}`} href={`/en`}>Eng</Link>
+            <a className={`lang-btn ${locale === 'en' ? 'active' : ''}`} href={`/en`} onClick={switchLocale('en')}>Eng</a>
           </div>
         </nav>
         <div className="nav-mobile">
@@ -56,9 +70,9 @@ export default function Header() {
             ))}
           </List>
           <div className="drawer-lang">
-            <Link className={`lang-btn ${locale === 'uk' ? 'active' : ''}`} href={`/uk`} onClick={toggle(false)}>Укр</Link>
+            <a className={`lang-btn ${locale === 'uk' ? 'active' : ''}`} href={`/uk`} onClick={switchLocale('uk')}>Укр</a>
             <span className="lang-sep">/</span>
-            <Link className={`lang-btn ${locale === 'en' ? 'active' : ''}`} href={`/en`} onClick={toggle(false)}>Eng</Link>
+            <a className={`lang-btn ${locale === 'en' ? 'active' : ''}`} href={`/en`} onClick={switchLocale('en')}>Eng</a>
           </div>
         </Drawer>
       </Toolbar>
