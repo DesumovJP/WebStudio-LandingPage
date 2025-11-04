@@ -7,31 +7,33 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import LanguageSwitcher from "./LanguageSwitcher";
+import { useDict } from "@/i18n/DictContext";
 
 export default function Header() {
+  const { dict } = useDict();
   const [open, setOpen] = useState(false);
   const toggle = (v: boolean) => () => setOpen(v);
   const pathname = usePathname() || "/";
   const parts = pathname.split("/");
   const currentLocale = ["uk", "en"].includes(parts[1]) ? parts[1] : undefined;
   const items = [
-    { href: "#work", label: "Work" },
-    { href: "#services", label: "Services" },
-    { href: "#process", label: "Process" },
-    { href: "#contact", label: "Contact" },
+    { href: "#work", label: dict?.nav?.work ?? "Work" },
+    { href: "#services", label: dict?.nav?.services ?? "Services" },
+    { href: "#process", label: dict?.nav?.process ?? "Process" },
+    { href: "#contact", label: dict?.nav?.contact ?? "Contact" },
   ];
   return (
     <AppBar position="sticky" color="transparent" elevation={0} className="header">
       <Toolbar className="container header-toolbar">
         <Link href={`/${currentLocale ?? ''}` || '/uk'} aria-label="Studio brand" className="brand heading-lg brand-wrap header-left">
           <img src="http://localhost:1337/uploads/pawukpng_89b3bd786e.png" alt="Webbie logo" className="brand-logo" />
-          <span>Webbie</span>
+          <span>{dict?.nav?.brand ?? 'Webbie'}</span>
         </Link>
         <nav className="nav nav-desktop">
           {items.slice(0,3).map((i) => (
             <Button key={i.href} href={i.href} color="inherit">{i.label}</Button>
           ))}
-          <Button href="#contact" color="inherit" variant="outlined" className="glass">Contact</Button>
+          <Button href="#contact" color="inherit" variant="outlined" className="glass">{dict?.nav?.contact ?? 'Contact'}</Button>
           <LanguageSwitcher />
         </nav>
         <div className="nav-mobile">

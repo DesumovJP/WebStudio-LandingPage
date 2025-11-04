@@ -1,8 +1,324 @@
 {
-  "hero": {
-    "title": "Hello, world!",
-    "desc": "This is the English version of the site."
+  "nav": {
+    "work": "Work",
+    "services": "Services",
+    "process": "Process",
+    "contact": "Contact",
+    "brand": "Webbie",
+    "contactCta": "Start a project",
+    "viewWork": "View work"
   },
+  "hero": {
+    "title": "We build websites and apps that bring customers",
+    "desc": "We combine strategic design, clean code, and a fast launch. You get a turnkey product: from idea and prototype to deployment and support. 🇺🇦 Ukrainian team based in Kyiv.",
+    "services": ["Websites", "Web apps", "Mobile apps", "(Android & iOS)"]
+  },
+  "sections": {
+    "lastProjects": "Latest projects",
+    "petProjects": "Pet projects",
+    "howWeWork": "How we work",
+    "pricing": {
+      "title": "Choose the approach for your product",
+      "subtitle": "Transparent pricing with no hidden fees. Every plan includes 30 days of support after launch.",
+      "popularBadge": "Popular"
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "subtitle": "Answers to questions our clients often ask"
+    },
+    "contact": {
+      "title": "Ready to grow? Tell us about your idea.",
+      "subtitle": "We will respond within 24 hours and send a launch plan with budget.",
+      "now": "Our team right now:",
+      "telegram": "Or write to us on Telegram right now",
+      "button": "Click"
+    }
+  },
+  "servicesBlock": {
+    "full": {
+      "title": "Turnkey",
+      "desc": "UX/UI, frontend, backend, integrations and analytics — one team, one deadline."
+    },
+    "fast": {
+      "title": "Fast start",
+      "desc": "First version in weeks, not months. We focus on business metrics, not extra screens."
+    },
+    "scale": {
+      "title": "Scale",
+      "desc": "Architecture ready for growth: Next.js + Strapi + modern infrastructure."
+    }
+  },
+  "process": [
+    {
+      "num": "1",
+      "name": "Research",
+      "title": "Deep dive into the business",
+      "desc": "Interviews, competitor and keyword analysis. We form the USP, content structure and SEO core so clients find you organically."
+    },
+    {
+      "num": "2",
+      "name": "Design",
+      "title": "A system that sells",
+      "desc": "Prototypes, design system, minimalist UI focused on conversion. Content guide and micro-animations for a modern brand feel."
+    },
+    {
+      "num": "3",
+      "name": "Development",
+      "title": "Best engineering practices",
+      "desc": "Next.js + Strapi, accessibility, speed, SSG/ISR, analytics and integrations. Clean code and scalable architecture."
+    },
+    {
+      "num": "4",
+      "name": "Launch & growth",
+      "title": "SEO and ongoing support",
+      "desc": "Technical SEO, Schema.org markup, Core Web Vitals, content plan. Weekly demos and a transparent backlog in a shared tool."
+    }
+  ],
+  "pricing": [
+    {
+      "title": "Starter",
+      "price": "from $250",
+      "time": "up to 7 days",
+      "subtitle": "Perfect for testing an idea",
+      "desc": "Minimal landing page or one‑pager. Fast launch, clean code, technical SEO foundation. Ready to scale.",
+      "features": [
+        "UX prototype and responsive design",
+        "Next.js frontend with SSG (Core Web Vitals)",
+        "Technical SEO optimization",
+        "Mobile version with fast loading",
+        "30 days of technical support"
+      ]
+    },
+    {
+      "title": "Business",
+      "price": "from $500",
+      "time": "up to 3 weeks",
+      "subtitle": "Most popular choice",
+      "desc": "Full website or e‑commerce with an admin panel to manage products. User auth, payment integrations, sales analytics. Marketing‑ready.",
+      "features": [
+        "React + Next.js frontend",
+        "Strapi CMS — interactive admin panel",
+        "User authentication and access roles",
+        "Integrations: payments (Stripe/WayForPay), CRM, analytics",
+        "SEO foundation + content plan",
+        "30 days of support + 2 free edits"
+      ]
+    },
+    {
+      "title": "Scale",
+      "price": "from $750",
+      "time": "from 3 weeks",
+      "subtitle": "For growing businesses",
+      "desc": "Enterprise level: design system, scalable architecture, mobile app. Ready for millions of users.",
+      "features": [
+        "Flexible design system and component architecture",
+        "React / React Native frontend",
+        "Node.js backend + PostgreSQL",
+        "High performance, security, monitoring",
+        "API‑first approach for integrations",
+        "30 days of support + monthly consultations"
+      ]
+    }
+  ],
+  "faq": [
+    {
+      "q": "How long does a project take?",
+      "a": "It depends on complexity and scope: a simple landing — up to 7 days (Starter), e‑commerce with CMS and admin — up to 3 weeks (Business), complex product with a design system — from 3 weeks (Scale). After a detailed task analysis we send an exact plan with deadlines for each stage: research, design, development, testing, launch. Every project starts with clarifying requirements and creating a spec to avoid misunderstandings and delays."
+    },
+    {
+      "q": "Can we edit content ourselves after launch?",
+      "a": "Yes. Business and Scale include an interactive admin panel (Strapi CMS) where you can edit text, products, categories, blog posts, images without developers. The panel is intuitive, similar to working with documents. We also onboard your team: demo session, video guides and documentation. In Starter, content can be changed in code or we can add a basic admin panel as an option."
+    },
+    {
+      "q": "What does post‑launch support include?",
+      "a": "Support includes: security and dependency updates, bug fixes, product growth consulting, Core Web Vitals monitoring and performance, SEO optimization and analytics. The first 30 days after launch are included for all plans. After that, you can continue monthly or on demand. Scale includes monthly consultations and priority support. Details are agreed on project start and fixed in the contract."
+    },
+    {
+      "q": "How do you handle SEO optimization?",
+      "a": "We lay the SEO foundation from day one. Technical optimization includes: SSG/ISR for speed, structured Schema.org markup for better indexing, Core Web Vitals optimization (LCP, FID, CLS), semantic HTML, proper meta tags and Open Graph. We also provide a content plan and strategy for organic growth, keyword strategy, and set up analytics to track positions. Business and Scale include XML sitemap, robots.txt, and Google Search Console integration."
+    },
+    {
+      "q": "Do you work with existing systems (CRM, payments)?",
+      "a": "Yes. We integrate your site with popular CRMs (HubSpot, Salesforce, Pipedrive), payment systems (Stripe, WayForPay, LiqPay, PayPal), analytics (Google Analytics, Yandex.Metrika, Mixpanel), email marketing (Mailchimp, SendGrid), and other business tools. We use REST and GraphQL for integrations. For custom systems, we build integrations to your requirements. All integrations are tested before launch and documented for your team."
+    },
+    {
+      "q": "What if we need to scale the project?",
+      "a": "The architecture is prepared for growth from the start thanks to modern technologies (Next.js, Strapi, PostgreSQL). We can add features, a mobile app (React Native for iOS and Android), expand the backend, integrate additional services, add multilingual support, implement complex business logic. Scaling happens without rewriting code — we add modules to the existing structure. We also optimize performance via caching, CDN, and horizontal scaling when needed."
+    },
+    {
+      "q": "Which technologies do you use?",
+      "a": "Frontend: Next.js, React, TypeScript for web apps; React Native for mobile (iOS and Android). Backend: Node.js, Strapi CMS for admin and content, PostgreSQL database. Integrations: GraphQL and REST APIs. Infrastructure: Vercel, AWS, or others per your preference. We also use modern tools: Zustand for state, Framer Motion for animations. All technologies are up‑to‑date with strong communities for long‑term support."
+    },
+    {
+      "q": "What does your process look like?",
+      "a": "The process is split into stages: 1) Research — business goals, competitors, audience, USP; 2) Design — prototypes, design system, responsive layouts; 3) Development — iterative development with weekly demos; 4) Testing — devices and browsers; 5) Launch — deploy, setup, access handover. Weekly demos show progress, changes and next steps. We use Trello or other tools for transparency. Communication is via Telegram or email, as you prefer."
+    },
+    {
+      "q": "How much does a project cost?",
+      "a": "Price depends on scope and complexity. Starter from $250 (simple landing), Business from $500 (e‑commerce with CMS), Scale from $750 (complex product). After describing your task we provide a detailed estimate broken down by stage and options. Final price is fixed in the contract before work starts. Payment can be per stage or split before start and before launch. Flexible terms are discussed individually."
+    }
+  ],
+  "contact": {
+    "form": {
+      "name": "Name",
+      "email": "Email",
+      "company": "Company / Niche",
+      "about": "Briefly about the task",
+      "send": "Send"
+    }
+  },
+  "modal": {
+    "techStack": "Tech stack",
+    "done": "What we did",
+    "benefits": "Business benefits",
+    "result": "Outcome"
+  },
+  "footer": {
+    "rights": "All rights reserved. · Ukraine, Kyiv 🇺🇦",
+    "copyright": "© {year} Webbie"
+  },
+  "projects": [
+    {
+      "title": "Tea E-commerce Store + CMS",
+      "sub": "E-commerce, Headless CMS",
+      "desc": "Store with catalog, cart, payment, and content management panel.",
+      "done": [
+        "UX purchase flow, cart, quick checkout",
+        "Strapi CMS for products, categories, and content blocks",
+        "Next.js frontend with ISR for fast pages"
+      ],
+      "benefits": [
+        "Content editing without developers",
+        "High loading speed (Core Web Vitals)",
+        "Modularity for catalog expansion"
+      ],
+      "outcome": "+38% conversion and stable organic traffic thanks to technical SEO.",
+      "metric": "+38% conversion",
+      "stack": ["Next.js", "Strapi", "Stripe", "PostgreSQL", "Zustand", "GraphQL"]
+    },
+    {
+      "title": "Corporate Event Host Landing Page",
+      "sub": "Lead‑gen, SEO‑ready",
+      "desc": "Landing page with application forms, fast rendering, and micro-animations.",
+      "done": ["Page scenario and copywriting", "Animations without overload", "Form/CRM integration"],
+      "benefits": ["Brand recognition", "High mobile conversion", "Ad‑ready"],
+      "outcome": "Leads from the first week of launch and lower cost per lead.",
+      "metric": "Leads from week 1",
+      "stack": ["Next.js", "Framer Motion", "HubSpot", "Strapi", "GraphQL"]
+    },
+    {
+      "title": "Fashion Marketplace — Blog",
+      "sub": "Content + catalog, authentication",
+      "desc": "Publications, tags, author profiles, and product catalog launch.",
+      "done": ["Content schema and roles", "Authentication and profiles", "Flexible lists/filters"],
+      "benefits": ["Fast content publishing", "SEO structure", "Monetization ready"],
+      "outcome": "Growth in organic traffic and time on site.",
+      "metric": "↑150% organic",
+      "stack": ["Next.js", "Strapi", "Auth0", "Redis", "GraphQL", "Crypto Payment APIs", "Zustand"]
+    },
+    {
+      "title": "Flower E-commerce Store + CMS",
+      "sub": "Quick purchase, payment integration",
+      "desc": "Bouquet configurator, quick checkout, push notifications.",
+      "done": ["React configurator", "Stripe/WayForPay", "Notifications and order tracking"],
+      "benefits": ["Convenient UX", "Fewer steps to purchase", "Easy assortment changes"],
+      "outcome": "More repeat orders and UGC on social media.",
+      "metric": "↑45% repeat",
+      "stack": ["React", "Strapi", "Stripe", "WebPush", "GraphQL", "Zustand"]
+    },
+    {
+      "title": "US Car Buying Web App",
+      "sub": "Auction aggregation",
+      "desc": "Car selection, bid tracking, logistics and customs payment calculations.",
+      "done": ["Lot import from API", "Logistics calculator", "Lot saving and tracking"],
+      "benefits": ["Manager time savings", "Fewer calculation errors", "Client profiles"],
+      "outcome": "Increased sales department efficiency and transparency for clients.",
+      "metric": "↑60% efficiency",
+      "stack": ["Next.js", "Node.js", "PostgreSQL", "GraphQL"]
+    },
+    {
+      "title": "Volunteer Organization Website",
+      "sub": "Reports and donations",
+      "desc": "Transparent reports, donation integrations, multilingual support.",
+      "done": ["Report pages and aid geography", "Donation integration", "Multilingual support"],
+      "benefits": ["Trust through transparency", "Mobile convenience", "Easy content management"],
+      "outcome": "Growth in regular donations and partnerships.",
+      "metric": "↑80% donations",
+      "stack": ["Next.js", "Strapi", "i18n", "Payment APIs"]
+    }
+  ],
+  "petProjects": [
+    {
+      "title": "Mobile Job Search App on Map",
+      "sub": "React Native, geolocation",
+      "desc": "Find jobs nearby on map, filters, favorites, and offline cache.",
+      "stack": ["React Native", "Geolocation API", "Map Integration", "AsyncStorage"]
+    },
+    {
+      "title": "Secure VPN App",
+      "sub": "Security and privacy",
+      "desc": "VPN client with fast connection, location list, and auto-reconnect.",
+      "stack": ["React Native", "OpenVPN Protocol", "TLS/SSL", "Background Services", "Secure Storage"]
+    }
+  ],
+  "process": [
+    {
+      "num": "1",
+      "name": "Research",
+      "title": "Deep dive into the business",
+      "desc": "Interviews, competitor and keyword analysis. We form the USP, content structure and SEO core so clients find you organically."
+    },
+    {
+      "num": "2",
+      "name": "Design",
+      "title": "A system that sells",
+      "desc": "Prototypes, design system, minimalist UI focused on conversion. Content guide and micro-animations for a modern brand feel."
+    },
+    {
+      "num": "3",
+      "name": "Development",
+      "title": "Best engineering practices",
+      "desc": "Next.js + Strapi, accessibility, speed, SSG/ISR, analytics and integrations. Clean code and scalable architecture."
+    },
+    {
+      "num": "4",
+      "name": "Launch & growth",
+      "title": "SEO and ongoing support",
+      "desc": "Technical SEO, Schema.org markup, Core Web Vitals, content plan. Weekly demos and a transparent backlog in a shared tool."
+    }
+  ],
+  "testimonials": [
+    {
+      "quote": "Webbie built our MVP in a few weeks. We started accepting applications and testing hypotheses right away.",
+      "author": "Marko D.",
+      "role": "Marketplace Founder",
+      "avatar": "http://localhost:1337/uploads/pngtree_cat_operating_laptop_png_image_15881120_46b9855a33.png"
+    },
+    {
+      "quote": "Fast site + technical SEO = stable organic traffic. The team kept us updated with weekly demos.",
+      "author": "Oksana P.",
+      "role": "CMO e‑commerce",
+      "avatar": "http://localhost:1337/uploads/memi_klev_club_8ceo_p_memi_kot_za_noutbukom_4_2bb025c5bd.jpg"
+    },
+    {
+      "quote": "The design system looks premium and doesn't slow down development. Communication is transparent, no surprises.",
+      "author": "Ilya R.",
+      "role": "Head of Product",
+      "avatar": "http://localhost:1337/uploads/marcel_friedrich_XC_28_Kk25_F0_unsplash_e981c3f3ac.jpg"
+    },
+    {
+      "quote": "We launched the landing page, connected analytics and CRM. Mobile conversion pleasantly surprised us.",
+      "author": "Anna K.",
+      "role": "Event Marketer",
+      "avatar": "http://localhost:1337/uploads/18aa2193a8b51fc53eab132c88c743f0_e7c81962dc.jpg"
+    },
+    {
+      "quote": "After the redesign, site speed increased and inquiries grew. We recommend Webbie.",
+      "author": "Roman S.",
+      "role": "Brand Co-owner",
+      "avatar": "http://localhost:1337/uploads/marcel_friedrich_XC_28_Kk25_F0_unsplash_e981c3f3ac.jpg"
+    }
+  ],
   "meta": {
     "title": "Webbie — Web & App Development",
     "description": "Webbie: design and development of websites and apps."
