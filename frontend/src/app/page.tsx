@@ -6,10 +6,12 @@ import Testimonials from "@/components/Testimonials";
 import Reveal from "@/components/Reveal";
 import { useState, useCallback } from "react";
 import React from "react";
+import { useDict } from "@/i18n/DictContext";
 
 type Project = { title: string; sub: string; desc: string };
 
 export default function Home() {
+  const { dict } = useDict();
   const projects: Array<{
     title: string; sub: string; desc: string;
     done: string[]; benefits: string[]; outcome: string;
@@ -163,21 +165,19 @@ export default function Home() {
         {/* Hero */}
         <section className="section hero-section" id="hero">
           <div className="container z-1 hero-pad">
-            <h1 className="heading-xl">Створюємо веб‑сайти та додатки, що приводять клієнтів</h1>
-            <p className="body-lg mt-3 w-72">
-              Ми поєднуємо стратегічний дизайн, чистий код і швидкий запуск. Ви отримуєте продукт під ключ: від ідеї та прототипу до розгортання та підтримки.
-            </p>
+            <h1 className="heading-xl">{dict.hero.title}</h1>
+            <p className="body-lg mt-3 w-72">{dict.hero.desc}</p>
             <div className="flex row gap-3 mt-3 hero-services">
-              <span className="body-md">Сайти</span>
+              <span className="body-md">{dict.hero.services[0]}</span>
               <span className="body-md hero-services-sep">•</span>
-              <span className="body-md">Веб‑додатки</span>
+              <span className="body-md">{dict.hero.services[1]}</span>
               <span className="body-md hero-services-sep">•</span>
-              <span className="body-md">Мобільні додатки</span>
-              <span className="body-md">(Android & iOS)</span>
+              <span className="body-md">{dict.hero.services[2]}</span>
+              <span className="body-md">{dict.hero.services[3]}</span>
             </div>
             <div className="flex row gap-2 mt-4">
-              <Button href="#contact" variant="contained" className="btn-lg">Запустити проєкт</Button>
-              <Button href="#work" variant="outlined" className="glass btn-lg">Дивитися роботи</Button>
+              <Button href="#contact" variant="contained" className="btn-lg">{dict.cta.start}</Button>
+              <Button href="#work" variant="outlined" className="glass btn-lg">{dict.cta.seeWork}</Button>
             </div>
           </div>
         </section>
@@ -187,16 +187,16 @@ export default function Home() {
           <section className="section services-section" id="services">
           <div className="container grid grid-3">
             <div className="service-item pink">
-              <h2 className="heading-lg">Під ключ</h2>
-              <p className="body-lg">UX/UI, фронтенд, бекенд, інтеграції та аналітика — одна команда, один дедлайн.</p>
+              <h2 className="heading-lg">{dict.sections.services.title1}</h2>
+              <p className="body-lg">{dict.sections.services.desc1}</p>
             </div>
             <div className="service-item green">
-              <h2 className="heading-lg">Швидкий старт</h2>
-              <p className="body-lg">Перша версія за тижні, не місяці. Фокусуємося на бізнес‑метриках, а не на зайвих екранах.</p>
+              <h2 className="heading-lg">{dict.sections.services.title2}</h2>
+              <p className="body-lg">{dict.sections.services.desc2}</p>
             </div>
             <div className="service-item yellow">
-              <h2 className="heading-lg">Масштабування</h2>
-              <p className="body-lg">Архітектура, готова до зростання: Next.js + Strapi + сучасна інфраструктура.</p>
+              <h2 className="heading-lg">{dict.sections.services.title3}</h2>
+              <p className="body-lg">{dict.sections.services.desc3}</p>
             </div>
           </div>
         </section>
@@ -206,7 +206,7 @@ export default function Home() {
         <Reveal>
           <section className="section" id="work">
             <div className="container">
-              <h2 className="heading-lg">Останні проєкти</h2>
+              <h2 className="heading-lg">{dict.sections.projects.title}</h2>
               <div className="grid grid-3 mt-3">
                 {projects.map((p, i) => (
                   <Paper key={i} className="glass card project click" elevation={0} onClick={() => handleOpen(p)}>
@@ -238,7 +238,7 @@ export default function Home() {
         <Reveal>
           <section className="section" id="pet">
           <div className="container">
-            <h2 className="heading-md">Пет‑проєкти</h2>
+            <h2 className="heading-md">{dict.sections.pet.title}</h2>
             <div className="grid grid-3 mt-2">
               {petProjects.map((p, i) => (
                 <Paper key={i} className="glass card project click" elevation={0} onClick={() => handleOpen(p)}>
@@ -260,7 +260,7 @@ export default function Home() {
         <Reveal>
           <section className="section process-section" id="process">
           <div className="container z-1">
-            <h2 className="heading-lg text-center">Як ми працюємо</h2>
+            <h2 className="heading-lg text-center">{dict.sections.process.title}</h2>
             <div className="mt-4">
               <div className="steps-grid">
                 <div className="step-card">
@@ -315,8 +315,8 @@ export default function Home() {
           <section className="section pricing-section" id="pricing">
           <div className="container">
             <div className="pricing-header text-center">
-              <h2 className="heading-lg pricing-title-main">Виберіть підхід до вашого продукту</h2>
-              <p className="body-lg mt-2 pricing-subtitle">Прозорі ціни без прихованих платежів. Кожен тариф включає підтримку перші 30 днів після запуску.</p>
+              <h2 className="heading-lg pricing-title-main">{dict.sections.pricing.title}</h2>
+              <p className="body-lg mt-2 pricing-subtitle">{dict.sections.pricing.subtitle}</p>
             </div>
             <div className="grid grid-3 mt-4 pricing-grid">
               {[{
@@ -367,7 +367,7 @@ export default function Home() {
                       <svg className="badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                         <path d="M12 2l2.5 7.5 7.5.6-5.8 4.5 1.9 7.1-6.1-4-6.1 4 1.9-7.1-5.8-4.5 7.5-.6L12 2z" strokeLinecap="round" strokeLinejoin="round"/>
                       </svg>
-                      Popular
+                      {dict.sections.pricing.popular}
                     </span> : null}
                     <div className="pricing-title-row">
                       <div className="pricing-name">
@@ -412,8 +412,8 @@ export default function Home() {
                 <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
                 <line x1="12" y1="17" x2="12.01" y2="17"/>
               </svg>
-              <h2 className="heading-lg text-center">Часті запитання</h2>
-              <p className="body-lg text-center faq-subtitle">Відповіді на питання, які часто задають наші клієнти</p>
+              <h2 className="heading-lg text-center">{dict.sections.faq.title}</h2>
+              <p className="body-lg text-center faq-subtitle">{dict.sections.faq.subtitle}</p>
             </div>
             <div className="faq-grid mt-4">
               {[
@@ -483,14 +483,14 @@ export default function Home() {
         <Reveal>
           <section className="section" id="contact">
           <div className="container">
-            <h2 className="heading-lg text-center">Готові зростати? Розкажіть про ідею.</h2>
-            <p className="body-lg mt-2 text-center">Відповімо протягом 24 годин і надішлемо план запуску з бюджетом.</p>
+            <h2 className="heading-lg text-center">{dict.sections.contact.title}</h2>
+            <p className="body-lg mt-2 text-center">{dict.sections.contact.subtitle}</p>
             <div className="contact-grid mt-3">
               <div>
                 <div className="contact-image-wrap">
                   <img src="http://localhost:1337/uploads/cat_computer_9382ba0873.gif" alt="cat" className="contact-hero-img" />
                   <div className="contact-overlay">
-                    <h3 className="heading-md">Наша команда прямо зараз:</h3>
+                    <h3 className="heading-md">{dict.sections.contact.now}</h3>
                   </div>
                 </div>
               </div>
@@ -498,12 +498,12 @@ export default function Home() {
               <div className="modal-content pad-0">
                 <form className="form">
                   <div className="form-grid">
-                    <input className="mui-reset" type="text" placeholder="Ім’я" />
-                    <input className="mui-reset" type="email" placeholder="Email" />
-                    <input className="mui-reset full" type="text" placeholder="Компанія / Ніша" />
-                    <textarea className="mui-reset full" placeholder="Коротко про задачу" rows={2}></textarea>
+                    <input className="mui-reset" type="text" placeholder={dict.sections.contact.form.name} />
+                    <input className="mui-reset" type="email" placeholder={dict.sections.contact.form.email} />
+                    <input className="mui-reset full" type="text" placeholder={dict.sections.contact.form.company} />
+                    <textarea className="mui-reset full" placeholder={dict.sections.contact.form.task} rows={2}></textarea>
                     <div className="full justify-center">
-                      <Button type="submit" variant="contained" className="btn-lg">Надіслати</Button>
+                      <Button type="submit" variant="contained" className="btn-lg">{dict.sections.contact.send}</Button>
                     </div>
                   </div>
                 </form>
@@ -516,7 +516,7 @@ export default function Home() {
                 alt="Webbie logo"
                 className="contact-logo"
               />
-              <p className="body-md contact-telegram-text">Або пишіть прямо зараз в телеграм</p>
+              <p className="body-md contact-telegram-text">{dict.sections.contact.telegram}</p>
               <Button 
                 href="https://t.me/desumov" 
             target="_blank"
@@ -524,7 +524,7 @@ export default function Home() {
                 variant="contained"
                 className="telegram-button"
               >
-                Клік
+                {dict.sections.contact.click}
               </Button>
             </div>
           </div>

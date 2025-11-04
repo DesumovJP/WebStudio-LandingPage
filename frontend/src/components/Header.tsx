@@ -5,44 +5,34 @@ import { AppBar, Toolbar, Button, IconButton, Drawer, List, ListItem, ListItemBu
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import { useEffect, useState } from "react";
+import { useDict } from "@/i18n/DictContext";
 
 export default function Header() {
+  const { locale, dict } = useDict();
   const [open, setOpen] = useState(false);
   const toggle = (v: boolean) => () => setOpen(v);
-  const [lang, setLang] = useState<'uk' | 'en'>(() => {
-    if (typeof window === 'undefined') return 'uk';
-    return (localStorage.getItem('lang') as 'uk' | 'en') || 'uk';
-  });
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    localStorage.setItem('lang', lang);
-    document.body.setAttribute('data-lang', lang);
-  }, [lang]);
-
-  const changeLang = (l: 'uk' | 'en') => () => setLang(l);
   const items = [
-    { href: "#work", label: "Work" },
-    { href: "#services", label: "Services" },
-    { href: "#process", label: "Process" },
-    { href: "#contact", label: "Contact" },
+    { href: "#work", label: dict.nav.work },
+    { href: "#services", label: dict.nav.services },
+    { href: "#process", label: dict.nav.process },
+    { href: "#contact", label: dict.nav.contact },
   ];
   return (
     <AppBar position="sticky" color="transparent" elevation={0} className="header">
       <Toolbar className="container header-toolbar">
-        <Link href="/" aria-label="Studio brand" className="brand heading-lg brand-wrap header-left">
+        <Link href={`/${locale}`} aria-label="Studio brand" className="brand heading-lg brand-wrap header-left">
           <img src="http://localhost:1337/uploads/pawukpng_89b3bd786e.png" alt="Webbie logo" className="brand-logo" />
-          <span>Webbie</span>
+          <span>{dict.brand}</span>
         </Link>
         <nav className="nav nav-desktop">
           {items.slice(0,3).map((i) => (
-            <Button key={i.href} href={i.href} color="inherit">{i.label}</Button>
+            <Button key={i.href} href={`/${locale}${i.href}`} color="inherit">{i.label}</Button>
           ))}
-          <Button href="#contact" color="inherit" variant="outlined" className="glass">Contact</Button>
+          <Button href={`/${locale}#contact`} color="inherit" variant="outlined" className="glass">{dict.nav.contact}</Button>
           <div className="lang-switch">
-            <button className={`lang-btn ${lang === 'uk' ? 'active' : ''}`} onClick={changeLang('uk')} aria-pressed={lang==='uk'}>Укр</button>
+            <Link className={`lang-btn ${locale === 'uk' ? 'active' : ''}`} href={`/uk`}>Укр</Link>
             <span className="lang-sep">/</span>
-            <button className={`lang-btn ${lang === 'en' ? 'active' : ''}`} onClick={changeLang('en')} aria-pressed={lang==='en'}>Eng</button>
+            <Link className={`lang-btn ${locale === 'en' ? 'active' : ''}`} href={`/en`}>Eng</Link>
           </div>
         </nav>
         <div className="nav-mobile">
@@ -59,16 +49,16 @@ export default function Header() {
           <List className="drawer-list">
             {items.map((i) => (
               <ListItem key={i.href} disablePadding>
-                <ListItemButton component="a" href={i.href} onClick={toggle(false)}>
+                <ListItemButton component="a" href={`/${locale}${i.href}`} onClick={toggle(false)}>
                   <ListItemText primary={i.label} />
                 </ListItemButton>
               </ListItem>
             ))}
           </List>
           <div className="drawer-lang">
-            <button className={`lang-btn ${lang === 'uk' ? 'active' : ''}`} onClick={changeLang('uk')} aria-pressed={lang==='uk'}>Укр</button>
+            <Link className={`lang-btn ${locale === 'uk' ? 'active' : ''}`} href={`/uk`} onClick={toggle(false)}>Укр</Link>
             <span className="lang-sep">/</span>
-            <button className={`lang-btn ${lang === 'en' ? 'active' : ''}`} onClick={changeLang('en')} aria-pressed={lang==='en'}>Eng</button>
+            <Link className={`lang-btn ${locale === 'en' ? 'active' : ''}`} href={`/en`} onClick={toggle(false)}>Eng</Link>
           </div>
         </Drawer>
       </Toolbar>
