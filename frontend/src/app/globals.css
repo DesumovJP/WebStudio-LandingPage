@@ -108,9 +108,15 @@ a {
 .header-toolbar { padding-left: 0; padding-right: 0; min-height: 10vh; }
 .brand { text-decoration: none; }
 .nav { margin-left: auto; display: flex; gap: 1vh; }
+.lang-switch { display: inline-flex; align-items: center; gap: 0.6vh; margin-left: 1vh; padding-left: 1vh; border-left: 0.08rem solid rgba(0,0,0,0.1); }
+.lang-btn { background: transparent; border: none; padding: 0.6vh 1vh; border-radius: 0.6rem; cursor: pointer; color: var(--muted); font-weight: 600; letter-spacing: 0.02em; }
+.lang-btn.active { color: var(--text); background: rgba(255,255,255,0.7); border: 0.08rem solid rgba(0,0,0,0.08); }
+.lang-sep { color: var(--muted); opacity: 0.6; padding: 0 0.2vh; }
+.drawer-lang { margin-top: 2vh; display: flex; align-items: center; gap: 0.6vh; }
 
 .brand-wrap { display: inline-flex; align-items: center; gap: 1vh; }
-.brand-logo { width: 2.2em; height: auto; display: inline-block; transform: rotate(180deg); }
+.brand-logo { width: 2.2em; height: auto; display: inline-block; }
+.brand-logo-flip { transform: scaleY(-1) !important; transform-origin: center center; }
 
 /* Header responsive */
 .header-left { margin-right: auto; }
@@ -237,6 +243,46 @@ a {
 .project-card { padding-top: 56%; width: 100%; background: #F5F5F5; border-radius: 0; position: relative; overflow: hidden; }
 .project-card-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
 
+/* Make project card papers more opaque */
+.project.glass { background: rgba(255,255,255,0.9); border-color: rgba(255,255,255,0.82); }
+
+/* Subtle blurred spiderweb background for project sections */
+#work, #pet { position: relative; }
+#work::before, #pet::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.08;
+  background: url('http://localhost:1337/uploads/BCO_1a37bfa3_3a23_4467_a32d_159e5744768b_49201401f6.png') center / cover no-repeat;
+  filter: blur(0.6vh) saturate(130%);
+  mix-blend-mode: multiply;
+}
+#work::before { top: 14vh; width: 140vw; height: 66vh; transform: translateX(-50%) rotate(-8deg); }
+#pet::before { top: -4vh; width: 130vw; height: 70vh; transform: translateX(-50%) rotate(8deg); }
+#work .container, #pet .container { position: relative; z-index: 1; }
+
+/* Contact section spiderweb background */
+#contact { position: relative; }
+#contact::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%) rotate(6deg);
+  top: 4vh;
+  width: 120vw;
+  height: 64vh;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.08;
+  background: url('http://localhost:1337/uploads/BCO_1a37bfa3_3a23_4467_a32d_159e5744768b_49201401f6.png') center / cover no-repeat;
+  filter: blur(0.6vh) saturate(130%);
+  mix-blend-mode: multiply;
+}
+#contact .container { position: relative; z-index: 1; }
+
 /* Image placeholders */
 .skeleton {
   position: relative;
@@ -289,14 +335,35 @@ a {
 .pricing-grid { align-items: stretch; position: relative; }
 .pricing-card { position: relative; overflow: hidden; display: flex; flex-direction: column; }
 .pricing-card.glass { background: rgba(255,255,255,0.65); backdrop-filter: blur(1.4rem); -webkit-backdrop-filter: blur(1.4rem); border: 0.1rem solid rgba(255,255,255,0.5); }
+/* restore original highlight bar only */
 .pricing-card::before { content:""; position:absolute; inset:-20% -10% auto -10%; height: 35%; background: linear-gradient(90deg, rgba(255,255,255,0.6), rgba(255,255,255,0.15)); filter: blur(3vh); pointer-events:none; z-index: 0; }
-.pricing-card::after { content: ""; position: absolute; bottom: -20%; left: 50%; transform: translateX(-50%); width: 150%; height: 80%; background: radial-gradient(ellipse 100% 80% at 50% 50%, rgba(0,0,0,0), rgba(0,0,0,0)); filter: blur(8vh); pointer-events: none; z-index: 0; }
+.pricing-card::after { content: ""; position: absolute; bottom: -20%; left: 50%; transform: translateX(-50%); width: 150%; height: 80%; background: radial-gradient(ellipse 100% 80% at 50% 50%, rgba(0,0,0,0), rgba(0,0,0,0)); filter: blur(8vh) saturate(120%); pointer-events: none; z-index: 0; transition: filter 320ms ease, opacity 260ms ease; }
 .pricing-card-blue::after { background: radial-gradient(ellipse 100% 80% at 50% 50%, rgba(25, 118, 210, 0.15), rgba(66, 165, 245, 0.08), rgba(100, 181, 246, 0.04), transparent 75%); }
 .pricing-card-green::after { background: radial-gradient(ellipse 100% 80% at 50% 50%, rgba(46, 125, 50, 0.15), rgba(76, 175, 80, 0.08), rgba(102, 187, 106, 0.04), transparent 75%); }
 .pricing-card-gold::after { background: radial-gradient(ellipse 100% 80% at 50% 50%, rgba(184, 134, 11, 0.15), rgba(212, 175, 55, 0.08), rgba(255, 215, 0, 0.04), transparent 75%); }
 .pricing-card .card-body { display: flex; flex-direction: column; flex: 1; padding: 5vh 4vh; position: relative; z-index: 1; }
 .pricing-title-row { display: flex; align-items: center; gap: 1.2vh; margin-bottom: 2.5vh; }
+.pricing-name { display: inline-flex; align-items: center; gap: 1.2vh; transform-origin: left center; transition: transform 200ms ease; }
+.pricing-emoji { font-size: 1.1em; line-height: 1; display: inline-block; }
+.emoji-blue { color: #42a5f5; }
 .pricing-card .card-title { font-weight: 700; letter-spacing: -0.04em; font-size: clamp(1.4rem, 3.5vw, 2rem); }
+.pricing-card .card-title { position: relative; display: inline-block; overflow: hidden; transition: transform 200ms ease; transform-origin: left center; }
+/* Shine overlay */
+.pricing-card .card-title::after { 
+  content: ""; position: absolute; top: -25%; bottom: -25%; left: -30%; width: 30%; 
+  background: linear-gradient(120deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.9) 50%, rgba(255,255,255,0) 100%);
+  transform: skewX(-20deg) translateX(-120%);
+  opacity: 0; pointer-events: none; mix-blend-mode: screen;
+}
+@keyframes pricingTitleShine { 
+  0% { transform: skewX(-20deg) translateX(-120%); opacity: 0; }
+  20% { opacity: 0.9; }
+  100% { transform: skewX(-20deg) translateX(320%); opacity: 0; }
+}
+.pricing-card:hover .card-title::after { animation: pricingTitleShine 900ms ease-out; }
+@media (hover: hover) and (pointer: fine) {
+  .pricing-card:hover .pricing-name { transform: scale(1.06); }
+}
 .pricing-icon { width: 1.6rem; height: 1.6rem; display: inline-block; flex-shrink: 0; opacity: 0.5; }
 .pricing-subtitle-row { display: flex; align-items: baseline; gap: 2vh; margin-top: 2vh; margin-bottom: 1.5vh; }
 .price { font-weight: 800; letter-spacing: -0.05em; font-size: clamp(1.6rem, 4vw, 2.2rem); line-height: 1; }
@@ -312,6 +379,19 @@ a {
 .badge-icon { width: 1rem; height: 1rem; display: inline-block; flex-shrink: 0; opacity: 0.85; }
 @media (hover: hover) and (pointer: fine) {
   .pricing-card:hover { transform: translateY(-0.8vh); box-shadow: 0 0.8rem 1.8rem rgba(0,0,0,0.08); }
+}
+
+/* Pricing gradient emphasis on hover */
+@media (hover: hover) and (pointer: fine) {
+  .pricing-card:hover::after { filter: blur(7vh) saturate(160%); }
+  .pricing-card-blue:hover::after { background: radial-gradient(ellipse 100% 80% at 50% 50%, rgba(25, 118, 210, 0.26), rgba(66, 165, 245, 0.16), rgba(100, 181, 246, 0.08), transparent 75%); }
+  .pricing-card-green:hover::after { background: radial-gradient(ellipse 100% 80% at 50% 50%, rgba(46, 125, 50, 0.26), rgba(76, 175, 80, 0.16), rgba(102, 187, 106, 0.08), transparent 75%); }
+  .pricing-card-gold:hover::after { background: radial-gradient(ellipse 100% 80% at 50% 50%, rgba(184, 134, 11, 0.26), rgba(212, 175, 55, 0.16), rgba(255, 215, 0, 0.08), transparent 75%); }
+}
+
+/* Contrast only: smoothly increase saturation on hover */
+@media (hover: hover) and (pointer: fine) {
+  .pricing-card:hover::after { filter: blur(7vh) saturate(170%); }
 }
 
 /* Pricing title colors */
@@ -400,12 +480,65 @@ a {
 .contact-image-wrap::after { content: ""; position: absolute; top: 5%; left: 5%; width: calc(100% - 10%); height: calc(100% - 10%); background: rgba(0,0,0,0.5); pointer-events: none; z-index: 1; }
 .contact-overlay { position: absolute; top: 5%; left: 5%; width: calc(100% - 10%); height: calc(100% - 10%); display: flex; align-items: center; justify-content: center; text-align: center; color: #fff; pointer-events: none; z-index: 2; }
 .contact-image-wrap .contact-hero-img { border-radius: 0; }
-.contact-form-wrap { padding: 5%; }
+.contact-form-wrap { padding: 5%; padding-bottom: 7%; overflow: visible; }
+/* Give the submit button breathing room so hover shadow isn't clipped */
+.contact-form-wrap .justify-center { padding-bottom: 1.2vh; overflow: visible; }
+.contact-form-wrap .btn-lg { margin-top: 0.4vh; margin-bottom: 0.4vh; }
 .contact-telegram { margin-bottom: 2vh; }
 .contact-telegram-text { color: var(--muted); margin-bottom: 1.5vh; }
+.contact-logo { width: 4.5rem; height: auto; display: block; margin: 0 auto 1.2vh; opacity: 0.9; }
 .telegram-button { background: #111 !important; color: #fff !important; padding: 1.5vh 3vh !important; font-weight: 600 !important; text-transform: none !important; letter-spacing: 0.02em !important; border-radius: 0.8rem !important; transition: all 200ms ease !important; }
 .telegram-button:hover { background: #333 !important; transform: translateY(-0.2vh); box-shadow: 0 0.4rem 1rem rgba(0,0,0,0.15) !important; }
 .muted { color: var(--muted); }
+
+/* Large button utility for prominent CTAs */
+.btn-lg { 
+  padding: 1.65vh 3.6vh !important; 
+  font-size: clamp(1rem, 2.4vw, 1.15rem) !important; 
+  font-weight: 700 !important; 
+  letter-spacing: 0.01em !important; 
+  border-radius: 999rem !important; 
+  transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease, border-color 180ms ease, color 180ms ease !important;
+  display: inline-flex !important; 
+  align-items: center !important; 
+  justify-content: center !important; 
+  text-align: center !important;
+}
+
+/* Ensure primary contained buttons have white text (MUI CSS Layers may reduce specificity) */
+.MuiButton-containedPrimary { color: #fff !important; }
+.MuiButton-containedPrimary:hover { color: #fff !important; }
+
+/* CTA hover effects */
+@media (hover: hover) and (pointer: fine) {
+  /* Primary contained (Запустити проєкт, Надіслати) */
+  .MuiButton-containedPrimary.btn-lg:hover { 
+    transform: translateY(-0.2vh);
+    box-shadow: 0 0.4rem 1rem rgba(0,0,0,0.15) !important; /* match telegram */
+    background-color: #333 !important; /* match telegram */
+  }
+  .MuiButton-containedPrimary.btn-lg:active { 
+    transform: translateY(0); 
+    box-shadow: 0 0.3rem 0.8rem rgba(0,0,0,0.15) !important;
+  }
+
+  /* Outlined glass (Дивитися роботи) */
+  .MuiButton-outlined.btn-lg.glass:hover { 
+    transform: translateY(-0.2vh);
+    background: rgba(255,255,255,0.9) !important;
+    border-color: rgba(0,0,0,0.18) !important;
+    box-shadow: 0 0.6rem 1.4rem rgba(0,0,0,0.12) !important;
+  }
+  .MuiButton-outlined.btn-lg.glass:active { transform: translateY(0); }
+}
+
+/* Mobile sizing: make prominent buttons 20% smaller */
+@media (max-width: 48rem) {
+  .btn-lg {
+    padding: 1.32vh 2.88vh !important; /* -20% vertical and horizontal */
+    font-size: clamp(0.8rem, 1.92vw, 0.92rem) !important; /* -20% */
+  }
+}
 
 /* Process steps */
 .steps { display: grid; gap: 2.5vh; }
@@ -446,7 +579,7 @@ a {
 
 /* Testimonials */
 .testimonial { padding: 4vh; text-align: center; min-height: 22vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-.testimonial-avatar { width: 4.5vh; height: 4.5vh; border-radius: 50%; background: rgba(0,0,0,0.08); display: flex; align-items: center; justify-content: center; margin: 0 auto 2vh; overflow: hidden; flex-shrink: 0; }
+.testimonial-avatar { width: 5.6vh; height: 5.6vh; border-radius: 50%; background: rgba(0,0,0,0.08); display: flex; align-items: center; justify-content: center; margin: 0 auto 2vh; overflow: hidden; flex-shrink: 0; }
 .testimonial-avatar span { font-size: clamp(0.9rem, 2.2vw, 1.1rem); font-weight: 600; color: var(--text); }
 .testimonial-avatar img { width: 100%; height: 100%; object-fit: cover; }
 .testimonial-quote { font-size: clamp(1.05rem, 2.8vw, 1.25rem); line-height: 160%; color: var(--text); margin-left: auto; margin-right: auto; max-width: 72%; }

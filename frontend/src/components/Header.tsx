@@ -4,11 +4,23 @@ import Link from "next/link";
 import { AppBar, Toolbar, Button, IconButton, Drawer, List, ListItem, ListItemButton, ListItemText } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
   const toggle = (v: boolean) => () => setOpen(v);
+  const [lang, setLang] = useState<'uk' | 'en'>(() => {
+    if (typeof window === 'undefined') return 'uk';
+    return (localStorage.getItem('lang') as 'uk' | 'en') || 'uk';
+  });
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    localStorage.setItem('lang', lang);
+    document.body.setAttribute('data-lang', lang);
+  }, [lang]);
+
+  const changeLang = (l: 'uk' | 'en') => () => setLang(l);
   const items = [
     { href: "#work", label: "Work" },
     { href: "#services", label: "Services" },
@@ -19,7 +31,7 @@ export default function Header() {
     <AppBar position="sticky" color="transparent" elevation={0} className="header">
       <Toolbar className="container header-toolbar">
         <Link href="/" aria-label="Studio brand" className="brand heading-lg brand-wrap header-left">
-          <img src="/logo-spider.svg" alt="Webbie logo" className="brand-logo"/>
+          <img src="http://localhost:1337/uploads/Copilot_20251104_140954_4c549ce2f5.png" alt="Webbie logo" className="brand-logo brand-logo-flip" />
           <span>Webbie</span>
         </Link>
         <nav className="nav nav-desktop">
@@ -27,6 +39,11 @@ export default function Header() {
             <Button key={i.href} href={i.href} color="inherit">{i.label}</Button>
           ))}
           <Button href="#contact" color="inherit" variant="outlined" className="glass">Contact</Button>
+          <div className="lang-switch">
+            <button className={`lang-btn ${lang === 'uk' ? 'active' : ''}`} onClick={changeLang('uk')} aria-pressed={lang==='uk'}>Укр</button>
+            <span className="lang-sep">/</span>
+            <button className={`lang-btn ${lang === 'en' ? 'active' : ''}`} onClick={changeLang('en')} aria-pressed={lang==='en'}>Eng</button>
+          </div>
         </nav>
         <div className="nav-mobile">
           <IconButton color="inherit" aria-label="menu" onClick={toggle(true)}>
@@ -48,6 +65,11 @@ export default function Header() {
               </ListItem>
             ))}
           </List>
+          <div className="drawer-lang">
+            <button className={`lang-btn ${lang === 'uk' ? 'active' : ''}`} onClick={changeLang('uk')} aria-pressed={lang==='uk'}>Укр</button>
+            <span className="lang-sep">/</span>
+            <button className={`lang-btn ${lang === 'en' ? 'active' : ''}`} onClick={changeLang('en')} aria-pressed={lang==='en'}>Eng</button>
+          </div>
         </Drawer>
       </Toolbar>
     </AppBar>

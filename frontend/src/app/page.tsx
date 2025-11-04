@@ -176,8 +176,8 @@ export default function Home() {
               <span className="body-md">(Android & iOS)</span>
             </div>
             <div className="flex row gap-2 mt-4">
-              <Button href="#contact" variant="contained">Запустити проєкт</Button>
-              <Button href="#work" variant="outlined" className="glass">Дивитися роботи</Button>
+              <Button href="#contact" variant="contained" className="btn-lg">Запустити проєкт</Button>
+              <Button href="#work" variant="outlined" className="glass btn-lg">Дивитися роботи</Button>
             </div>
           </div>
         </section>
@@ -370,21 +370,15 @@ export default function Home() {
                       Popular
                     </span> : null}
                     <div className="pricing-title-row">
-                      <div className={`card-title ${i === 0 ? 'pricing-blue' : i === 1 ? 'pricing-green' : 'pricing-gold'}`}>{p.title}</div>
-                      {i === 0 && (
-                        <svg className="pricing-icon" viewBox="0 0 24 24" fill="none" stroke="#42a5f5" strokeWidth="2"><path d="M5 12l4 4L19 6"/></svg>
-                      )}
-                      {i === 1 && (
-                        <svg className="pricing-icon" viewBox="0 0 24 24" fill="#4caf50">
-                          <circle cx="12" cy="9" r="3.5" fill="#4caf50"/>
-                          <circle cx="9" cy="12" r="3.5" fill="#4caf50"/>
-                          <circle cx="15" cy="12" r="3.5" fill="#4caf50"/>
-                          <circle cx="12" cy="15" r="3.5" fill="#4caf50"/>
-                        </svg>
-                      )}
-                      {i === 2 && (
-                        <svg className="pricing-icon" viewBox="0 0 24 24" fill="#d4af37"><path d="M3 7l4 5 5-7 5 7 4-5v10H3z"/></svg>
-                      )}
+                      <div className="pricing-name">
+                        <div className={`card-title ${i === 0 ? 'pricing-blue' : i === 1 ? 'pricing-green' : 'pricing-gold'}`}>{p.title}</div>
+                        <span
+                          className={`pricing-emoji ${i === 0 ? 'emoji-blue' : i === 1 ? 'emoji-clover' : 'emoji-crown'}`}
+                          aria-hidden="true"
+                        >
+                          {i === 1 ? '🍀' : i === 2 ? '👑' : '✔︎'}
+                        </span>
+                      </div>
                     </div>
                     <div className="pricing-subtitle-row">
                       <div className="price">{p.price}</div>
@@ -509,7 +503,7 @@ export default function Home() {
                     <input className="mui-reset full" type="text" placeholder="Компанія / Ніша" />
                     <textarea className="mui-reset full" placeholder="Коротко про задачу" rows={2}></textarea>
                     <div className="full justify-center">
-                      <Button className="w-25" type="submit" variant="contained">Надіслати</Button>
+                      <Button type="submit" variant="contained" className="btn-lg">Надіслати</Button>
                     </div>
                   </div>
                 </form>
@@ -517,6 +511,11 @@ export default function Home() {
             </Paper>
         </div>
             <div className="contact-telegram text-center mt-4">
+              <img
+                src="http://localhost:1337/uploads/Copilot_20251104_140954_4c549ce2f5.png"
+                alt="Webbie logo"
+                className="contact-logo"
+              />
               <p className="body-md contact-telegram-text">Або пишіть прямо зараз в телеграм</p>
               <Button 
                 href="https://t.me/desumov" 
