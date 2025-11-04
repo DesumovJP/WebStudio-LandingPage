@@ -3,14 +3,13 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   // Production optimizations
   compress: true,
-  
+
   // Image optimization
   images: {
     remotePatterns: [
       {
-        protocol: 'http',
-        hostname: 'localhost',
-        port: '1337',
+        protocol: 'https',
+        hostname: 'your-backend.up.railway.app', // ← заміни на свій Strapi backend
         pathname: '/uploads/**',
       },
       {
@@ -21,14 +20,14 @@ const nextConfig: NextConfig = {
     ],
     formats: ['image/avif', 'image/webp'],
   },
-  
+
   // Performance optimizations
   poweredByHeader: false,
-  
+
   // React strict mode
   reactStrictMode: true,
-  
-  // Production source maps (optional, disable for smaller builds)
+
+  // Source maps (disable for smaller builds)
   productionBrowserSourceMaps: false,
 };
 
