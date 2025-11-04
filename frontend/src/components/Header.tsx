@@ -31,7 +31,7 @@ export default function Header() {
     <AppBar position="sticky" color="transparent" elevation={0} className="header">
       <Toolbar className="container header-toolbar">
         <Link href="/" aria-label="Studio brand" className="brand heading-lg brand-wrap header-left">
-          <img src="http://localhost:1337/uploads/Copilot_20251104_140954_4c549ce2f5.png" alt="Webbie logo" className="brand-logo brand-logo-flip" />
+          <img src="http://localhost:1337/uploads/pawukpng_89b3bd786e.png" alt="Webbie logo" className="brand-logo" />
           <span>Webbie</span>
         </Link>
         <nav className="nav nav-desktop">

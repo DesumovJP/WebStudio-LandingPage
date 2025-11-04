@@ -486,7 +486,7 @@ a {
 .contact-form-wrap .btn-lg { margin-top: 0.4vh; margin-bottom: 0.4vh; }
 .contact-telegram { margin-bottom: 2vh; }
 .contact-telegram-text { color: var(--muted); margin-bottom: 1.5vh; }
-.contact-logo { width: 4.5rem; height: auto; display: block; margin: 0 auto 1.2vh; opacity: 0.9; }
+.contact-logo { width: 10.4rem; height: auto; display: block; margin: 0 auto 1.2vh; opacity: 0.95; }
 .telegram-button { background: #111 !important; color: #fff !important; padding: 1.5vh 3vh !important; font-weight: 600 !important; text-transform: none !important; letter-spacing: 0.02em !important; border-radius: 0.8rem !important; transition: all 200ms ease !important; }
 .telegram-button:hover { background: #333 !important; transform: translateY(-0.2vh); box-shadow: 0 0.4rem 1rem rgba(0,0,0,0.15) !important; }
 .muted { color: var(--muted); }
@@ -605,6 +605,10 @@ a {
 textarea.mui-reset { resize: vertical; height: 24vh; min-height: 24vh; max-height: 24vh; overflow-y: auto; }
 /* Ensure contact textarea uses fixed height */
 .contact-grid textarea.mui-reset { height: 24vh; min-height: 24vh; max-height: 24vh; }
+
+/* Make inputs opaque in contact section */
+.contact-grid .mui-reset { background: #ffffff; backdrop-filter: none; -webkit-backdrop-filter: none; border: 0.1rem solid rgba(0,0,0,0.12); }
+.contact-grid .mui-reset:focus { background: #ffffff; }
 
 /* FAQ */
 .faq-header { margin-bottom: 4vh; }
