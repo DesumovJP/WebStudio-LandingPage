@@ -1,39 +1,11 @@
 {
-  "brand": "Webbie",
-  "nav": { "work": "Work", "services": "Services", "process": "Process", "contact": "Contact" },
-  "cta": { "start": "Start a project", "seeWork": "See work" },
   "hero": {
-    "title": "We build websites and apps that bring customers",
-    "desc": "We combine strategic design, clean code and fast delivery. You get a turnkey product: from idea and prototype to launch and support.",
-    "services": ["Websites", "Web apps", "Mobile apps", "(Android & iOS)"]
+    "title": "Hello, world!",
+    "desc": "This is the English version of the site."
   },
-  "sections": {
-    "services": {
-      "title1": "Turn‑key",
-      "desc1": "UX/UI, frontend, backend, integrations and analytics — one team, one deadline.",
-      "title2": "Fast start",
-      "desc2": "First version in weeks, not months. We focus on business metrics, not extra screens.",
-      "title3": "Scale",
-      "desc3": "Architecture ready to grow: Next.js + Strapi + modern infrastructure."
-    },
-    "projects": { "title": "Latest projects" },
-    "pet": { "title": "Pet projects" },
-    "process": { "title": "How we work" },
-    "pricing": {
-      "title": "Choose your product approach",
-      "subtitle": "Transparent pricing. Each plan includes 30 days of support after launch.",
-      "popular": "Popular"
-    },
-    "faq": { "title": "FAQ", "subtitle": "Answers to frequently asked questions" },
-    "contact": {
-      "title": "Ready to grow? Tell us your idea.",
-      "subtitle": "We reply within 24 hours and send a launch plan with a budget.",
-      "now": "Our team right now:",
-      "telegram": "Or message us on Telegram right now",
-      "send": "Send",
-      "click": "Click",
-      "form": { "name": "Name", "email": "Email", "company": "Company / Niche", "task": "Briefly about the task" }
-    }
+  "meta": {
+    "title": "Webbie — Web & App Development",
+    "description": "Webbie: design and development of websites and apps."
   }
 }
 

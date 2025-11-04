@@ -1,19 +1,17 @@
-"use client";
-import React, { createContext, useContext } from "react";
-import type { Dictionary } from "./getDictionary";
-import type { Locale } from "./config";
+'use client';
 
-type Ctx = { locale: Locale; dict: Dictionary };
-const DictContext = createContext<Ctx | null>(null);
+import { createContext, useContext } from 'react';
+import type { Locale } from './config';
+import type { Dictionary } from './getDictionary';
 
-export function DictProvider({ value, children }: { value: Ctx; children: React.ReactNode }) {
+type DictValue = { locale: Locale; dict: Dictionary };
+
+export const DictContext = createContext<DictValue>({ locale: 'uk', dict: {} });
+
+export function DictProvider({ value, children }: { value: DictValue; children: React.ReactNode }) {
   return <DictContext.Provider value={value}>{children}</DictContext.Provider>;
 }
 
-export function useDict() {
-  const ctx = useContext(DictContext);
-  if (!ctx) throw new Error("useDict must be used within DictProvider");
-  return ctx;
-}
+export const useDict = () => useContext(DictContext);
 
 
