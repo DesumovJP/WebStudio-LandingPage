@@ -3,6 +3,7 @@
 import React from "react";
 import { Fade, Box } from "@mui/material";
 import { useDict } from "@/i18n/DictContext";
+import { getImageUrl } from "@/utils/urls";
 
 export default function Testimonials() {
   const { dict } = useDict();
@@ -38,7 +39,7 @@ export default function Testimonials() {
         <Fade key={index} in timeout={800}>
           <div>
             <div className="testimonial-avatar">
-              <img src={t.avatar || "http://localhost:1337/uploads/18aa2193a8b51fc53eab132c88c743f0_e7c81962dc.jpg"} alt={t.author} />
+              <img src={getImageUrl(t.avatar, '/landing-placeholder.svg')} alt={t.author} />
             </div>
             <p className="testimonial-quote">"{t.quote}"</p>
             <p className="testimonial-author">— {t.author}<span className="testimonial-role"> -  {t.role}</span></p>

@@ -1,12 +1,14 @@
 "use client";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { Button, Paper, Box, Dialog, Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
+import { Button, Paper, Box, Dialog, Accordion, AccordionSummary, AccordionDetails, IconButton } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import Testimonials from "@/components/Testimonials";
 import Reveal from "@/components/Reveal";
-import { useState, useCallback } from "react";
+import { useState, useCallback, FormEvent } from "react";
 import React from "react";
 import { useDict } from "@/i18n/DictContext";
+import { getImageUrl } from "@/utils/urls";
 
 type Project = { title: string; sub: string; desc: string };
 
@@ -24,24 +26,122 @@ export default function Home() {
 
   const [open, setOpen] = useState(false);
   const [current, setCurrent] = useState<Project | null>(null);
+  const [imageModalOpen, setImageModalOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const handleOpen = (p: Project) => { setCurrent(p); setOpen(true); setCurrentImageIndex(0); };
   const handleClose = () => { setOpen(false); setCurrentImageIndex(0); };
   
-  // Generate placeholder images array for gallery (3 images per project)
-  const galleryImages = current ? Array(3).fill(null).map((_, i) => `https://picsum.photos/800/600?random=${current.title}-${i}`) : [];
+  // Generate placeholder images array for gallery (6 images per project)
+  // Using placeholder SVG instead of external service for better performance
+  const galleryImages = current ? Array(6).fill(null).map((_, i) => `/landing-placeholder.svg`) : [];
+  
+  const handleImageClick = (index: number) => {
+    setCurrentImageIndex(index);
+    setImageModalOpen(true);
+  };
+  
+  const handleCloseImageModal = () => {
+    setImageModalOpen(false);
+  };
   
   const handlePrevImage = useCallback(() => {
     setCurrentImageIndex((prev) => (prev > 0 ? prev - 1 : galleryImages.length - 1));
   }, [galleryImages.length]);
   
-  const handleNextImage = useCallback(() => {
-    setCurrentImageIndex((prev) => (prev < galleryImages.length - 1 ? prev + 1 : 0));
-  }, [galleryImages.length]);
+    const handleNextImage = useCallback(() => {
+      setCurrentImageIndex((prev) => (prev < galleryImages.length - 1 ? prev + 1 : 0));
+    }, [galleryImages.length]);
 
-  const handleThumbClick = (index: number) => {
-    setCurrentImageIndex(index);
-  };
+    // Contact form state
+    const [formData, setFormData] = useState({
+      name: '',
+      email: '',
+      company: '',
+      about: '',
+    });
+    const [formStatus, setFormStatus] = useState<{
+      type: 'idle' | 'loading' | 'success' | 'error';
+      message: string;
+    }>({ type: 'idle', message: '' });
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      const { name, value } = e.target;
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    };
+
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      
+      // Валідація
+      if (!formData.name?.trim() || !formData.email?.trim() || !formData.about?.trim()) {
+        setFormStatus({
+          type: 'error',
+          message: dict?.contact?.form?.validationError ?? 'Please fill in all required fields',
+        });
+        return;
+      }
+
+      // Email валідація
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const trimmedEmail = formData.email.trim();
+      if (!emailRegex.test(trimmedEmail)) {
+        setFormStatus({
+          type: 'error',
+          message: dict?.contact?.form?.emailError ?? 'Please enter a valid email address',
+        });
+        return;
+      }
+
+      // Sanitize input (basic XSS protection)
+      const sanitizedData = {
+        name: formData.name.trim().slice(0, 100),
+        email: trimmedEmail.slice(0, 254),
+        company: formData.company.trim().slice(0, 100),
+        about: formData.about.trim().slice(0, 5000),
+      };
+
+      setFormStatus({ type: 'loading', message: '' });
+
+      try {
+        const response = await fetch('/api/contact', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(sanitizedData),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          setFormStatus({
+            type: 'success',
+            message: dict?.contact?.form?.success ?? 'Message sent successfully!',
+          });
+          // Очистити форму
+          setFormData({
+            name: '',
+            email: '',
+            company: '',
+            about: '',
+          });
+          // Сховати повідомлення через 5 секунд
+          setTimeout(() => {
+            setFormStatus({ type: 'idle', message: '' });
+          }, 5000);
+        } else {
+          setFormStatus({
+            type: 'error',
+            message: data.error || (dict?.contact?.form?.error ?? 'Failed to send message. Please try again.'),
+          });
+        }
+      } catch (error) {
+        setFormStatus({
+          type: 'error',
+          message: dict?.contact?.form?.error ?? 'Failed to send message. Please try again.',
+        });
+      }
+    };
 
   // Lock page scroll when modal is open
   React.useEffect(() => {
@@ -55,19 +155,19 @@ export default function Home() {
 
   // Keyboard navigation for gallery
   React.useEffect(() => {
-    if (!open) return;
+    if (!imageModalOpen) return;
     const handleKeyPress = (e: KeyboardEvent) => {
       if (e.key === 'ArrowLeft') {
         handlePrevImage();
       } else if (e.key === 'ArrowRight') {
         handleNextImage();
       } else if (e.key === 'Escape') {
-        handleClose();
+        handleCloseImageModal();
       }
     };
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [open, handlePrevImage, handleNextImage]);
+  }, [imageModalOpen, handlePrevImage, handleNextImage]);
 
   // Smooth scroll for anchor links
   React.useEffect(() => {
@@ -153,7 +253,7 @@ export default function Home() {
                       {p.stack && (
                         <div className="project-stack mt-2">
                           {p.stack.map((tech, idx) => (
-                            <span key={idx} className="stack-tag">{tech}</span>
+                            <span key={idx} className={`stack-tag stack-tag-${tech.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}`}>{tech}</span>
                           ))}
                         </div>
                       )}
@@ -179,6 +279,13 @@ export default function Home() {
                   <div className="card-body">
                     <div className="card-title">{p.title}</div>
                     <div className="card-sub">{p.sub}</div>
+                    {p.stack && (
+                      <div className="project-stack mt-2">
+                        {p.stack.map((tech, idx) => (
+                          <span key={idx} className={`stack-tag stack-tag-${tech.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '').replace(/\//g, '-')}`}>{tech}</span>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </Paper>
               ))}
@@ -327,7 +434,7 @@ export default function Home() {
             <div className="contact-grid mt-3">
               <div>
                 <div className="contact-image-wrap">
-                  <img src="http://localhost:1337/uploads/cat_computer_9382ba0873.gif" alt="cat" className="contact-hero-img" />
+                  <img src={getImageUrl('cat_computer_9382ba0873.gif')} alt="cat" className="contact-hero-img" />
                   <div className="contact-overlay">
                     <h3 className="heading-md">{dict?.sections?.contact?.now ?? ''}</h3>
                   </div>
@@ -335,14 +442,61 @@ export default function Home() {
               </div>
             <Paper className="paper-clear contact-form-wrap" elevation={0}>
               <div className="modal-content pad-0">
-                <form className="form">
+                <form className="form" onSubmit={handleSubmit}>
                   <div className="form-grid">
-                    <input className="mui-reset" type="text" placeholder={dict?.contact?.form?.name ?? 'Name'} />
-                    <input className="mui-reset" type="email" placeholder={dict?.contact?.form?.email ?? 'Email'} />
-                    <input className="mui-reset full" type="text" placeholder={dict?.contact?.form?.company ?? 'Company / Niche'} />
-                    <textarea className="mui-reset full" placeholder={dict?.contact?.form?.about ?? 'Briefly about the task'} rows={2}></textarea>
+                    <input
+                      className="mui-reset"
+                      type="text"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      placeholder={dict?.contact?.form?.name ?? 'Name'}
+                      required
+                      disabled={formStatus.type === 'loading'}
+                    />
+                    <input
+                      className="mui-reset"
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      placeholder={dict?.contact?.form?.email ?? 'Email'}
+                      required
+                      disabled={formStatus.type === 'loading'}
+                    />
+                    <input
+                      className="mui-reset full"
+                      type="text"
+                      name="company"
+                      value={formData.company}
+                      onChange={handleInputChange}
+                      placeholder={dict?.contact?.form?.company ?? 'Company / Niche'}
+                      disabled={formStatus.type === 'loading'}
+                    />
+                    <textarea
+                      className="mui-reset full"
+                      name="about"
+                      value={formData.about}
+                      onChange={handleInputChange}
+                      placeholder={dict?.contact?.form?.about ?? 'Briefly about the task'}
+                      rows={2}
+                      required
+                      disabled={formStatus.type === 'loading'}
+                    ></textarea>
+                    {formStatus.message && (
+                      <div className={`form-status ${formStatus.type === 'success' ? 'form-status-success' : formStatus.type === 'error' ? 'form-status-error' : ''}`}>
+                        {formStatus.message}
+                      </div>
+                    )}
                     <div className="full justify-center">
-                      <Button type="submit" variant="contained" className="btn-lg">{dict?.contact?.form?.send ?? 'Send'}</Button>
+                      <Button
+                        type="submit"
+                        variant="contained"
+                        className="btn-lg"
+                        disabled={formStatus.type === 'loading'}
+                      >
+                        {formStatus.type === 'loading' ? (dict?.contact?.form?.sending ?? 'Sending...') : (dict?.contact?.form?.send ?? 'Send')}
+                      </Button>
                     </div>
                   </div>
                 </form>
@@ -351,7 +505,7 @@ export default function Home() {
         </div>
             <div className="contact-telegram text-center mt-4">
               <img
-                src="http://localhost:1337/uploads/pawukpng_89b3bd786e.png"
+                src={getImageUrl('pawukpng_89b3bd786e.png')}
                 alt="Webbie logo"
                 className="contact-logo"
               />
@@ -372,40 +526,30 @@ export default function Home() {
         {/* Modal */}
         <Dialog open={open} onClose={handleClose} maxWidth={false} disableScrollLock={false} PaperProps={{ className: "modal-paper" }} BackdropProps={{ sx: { backdropFilter: 'blur(1rem)', backgroundColor: 'rgba(0,0,0,0.18)' } }}>
           <div className="modal-content">
+            <IconButton 
+              onClick={handleClose} 
+              className="modal-close-btn"
+              aria-label="close"
+              sx={{ 
+                position: 'absolute', 
+                top: '2rem', 
+                right: '2rem', 
+                zIndex: 10,
+                background: 'rgba(255, 255, 255, 0.9)',
+                backdropFilter: 'blur(0.8rem)',
+                width: '3.5rem',
+                height: '3.5rem',
+                fontSize: '1.75rem',
+                '&:hover': { background: 'rgba(255, 255, 255, 1)', transform: 'scale(1.1)' },
+                transition: 'all 200ms ease'
+              }}
+            >
+              <CloseIcon sx={{ fontSize: '1.75rem' }} />
+            </IconButton>
             <div className="modal-title">{current?.title}</div>
             <div className="modal-desc">{current?.desc}</div>
             <div className="modal-grid mt-3">
               <div className="modal-left">
-                <div className="gallery">
-                  <div className="gallery-hero-wrapper">
-                    <img 
-                      src={galleryImages[currentImageIndex]} 
-                      alt={`${current?.title} - Image ${currentImageIndex + 1}`}
-                      className="gallery-hero-img"
-                    />
-                    <button className="gallery-nav gallery-nav-prev" onClick={handlePrevImage} aria-label="Previous image">
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M15 18l-6-6 6-6"/></svg>
-                    </button>
-                    <button className="gallery-nav gallery-nav-next" onClick={handleNextImage} aria-label="Next image">
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 18l6-6-6-6"/></svg>
-                    </button>
-                    <div className="gallery-counter">{currentImageIndex + 1} / {galleryImages.length}</div>
-                  </div>
-                  <div className="gallery-thumbs">
-                    {galleryImages.map((img, idx) => (
-                      <button
-                        key={idx}
-                        className={`thumb ${idx === currentImageIndex ? 'thumb-active' : ''}`}
-                        onClick={() => handleThumbClick(idx)}
-                        aria-label={`View image ${idx + 1}`}
-                      >
-                        <img src={img} alt={`Thumbnail ${idx + 1}`} />
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-              <div className="modal-right">
                 {current && (
                   <>
                     {projects.find(p => p.title === current.title)?.stack && (
@@ -413,7 +557,7 @@ export default function Home() {
                         <h3>{dict?.modal?.techStack ?? 'Tech stack'}</h3>
                         <div className="project-stack modal-stack">
                           {projects.find(p => p.title === current.title)?.stack?.map((tech, idx) => (
-                            <span key={idx} className="stack-tag">{tech}</span>
+                            <span key={idx} className={`stack-tag stack-tag-${tech.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '').replace(/\//g, '-')}`}>{tech}</span>
                           ))}
                         </div>
                       </div>
@@ -439,8 +583,79 @@ export default function Home() {
                   </>
                 )}
               </div>
+              <div className="modal-right">
+                <div className="gallery-grid">
+                  {galleryImages.map((img, idx) => (
+                    <div
+                      key={idx}
+                      className="gallery-item"
+                      onClick={() => handleImageClick(idx)}
+                    >
+                      <img src={img} alt={`${current?.title} - Image ${idx + 1}`} />
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
         </div>
+        </Dialog>
+        
+        {/* Image Detail Modal */}
+        <Dialog 
+          open={imageModalOpen} 
+          onClose={handleCloseImageModal} 
+          maxWidth={false} 
+          disableScrollLock={false} 
+          PaperProps={{ className: "image-modal-paper" }} 
+          BackdropProps={{ sx: { backdropFilter: 'blur(1rem)', backgroundColor: 'rgba(0,0,0,0.85)' } }}
+        >
+          <div className="image-modal-content">
+            <IconButton 
+              onClick={handleCloseImageModal} 
+              className="image-modal-close-btn"
+              aria-label="close"
+              sx={{ 
+                position: 'fixed', 
+                top: '2rem', 
+                right: '2rem', 
+                zIndex: 10,
+                background: 'rgba(255, 255, 255, 0.95)',
+                backdropFilter: 'blur(0.8rem)',
+                width: '3.5rem',
+                height: '3.5rem',
+                fontSize: '1.75rem',
+                '&:hover': { background: 'rgba(255, 255, 255, 1)', transform: 'scale(1.1)' },
+                transition: 'all 200ms ease'
+              }}
+            >
+              <CloseIcon sx={{ fontSize: '1.75rem' }} />
+            </IconButton>
+            {galleryImages.length > 0 && (
+              <>
+                <img 
+                  src={galleryImages[currentImageIndex]} 
+                  alt={`${current?.title} - Image ${currentImageIndex + 1}`}
+                  className="image-modal-img"
+                />
+                <button className="image-modal-nav image-modal-nav-prev" onClick={handlePrevImage} aria-label="Previous image">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M15 18l-6-6 6-6"/></svg>
+                </button>
+                <button className="image-modal-nav image-modal-nav-next" onClick={handleNextImage} aria-label="Next image">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 18l6-6-6-6"/></svg>
+                </button>
+                <div className="image-modal-counter">{currentImageIndex + 1} / {galleryImages.length}</div>
+                <div className="image-modal-hint">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+                    <line x1="12" y1="18" x2="12.01" y2="18"/>
+                  </svg>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="rotate-icon">
+                    <path d="M21.5 2v6h-6M2.5 22v-6h6M22 12a10 10 0 0 0-10-10M2 12a10 10 0 0 0 10 10"/>
+                  </svg>
+                </div>
+              </>
+            )}
+          </div>
         </Dialog>
       </main>
       <Footer />
