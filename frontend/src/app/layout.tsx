@@ -1,5 +1,3 @@
-export { metadata } from "./[locale]/layout";
-
 export default function RootLayout({
   children,
 }: Readonly<{
