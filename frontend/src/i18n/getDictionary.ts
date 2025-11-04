@@ -1,4 +1,4 @@
-import type { Locale } from "./config";
+import { defaultLocale, isSupportedLocale, type Locale } from "./config";
 import uk from "./locales/uk.json";
 import en from "./locales/en.json";
 
@@ -9,8 +9,9 @@ const DICTS = {
 
 export type Dictionary = typeof uk;
 
-export async function getDictionary(locale: Locale): Promise<Dictionary> {
-  return DICTS[locale] as Dictionary;
+export async function getDictionary(locale: string): Promise<Dictionary> {
+  const safeLocale: Locale = isSupportedLocale(locale) ? locale : defaultLocale;
+  return DICTS[safeLocale] as Dictionary;
 }
 
 

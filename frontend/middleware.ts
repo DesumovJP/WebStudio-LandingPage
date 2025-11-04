@@ -30,6 +30,13 @@ export function middleware(request: NextRequest) {
     return NextResponse.rewrite(url);
   }
 
+  // If invalid locale somehow appears, normalize to default
+  if (!locales.includes(localeInPath)) {
+    const url = request.nextUrl.clone();
+    url.pathname = `/${defaultLocale}${pathname.replace(/^\/[^/]+/, "")}`;
+    return NextResponse.redirect(url);
+  }
+
   return NextResponse.next();
 }
 
