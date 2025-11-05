@@ -6,10 +6,14 @@ const nextConfig: NextConfig = {
 
   // Image optimization
   images: {
+    domains: [
+      'webstudio-landingpage-production.up.railway.app',
+      'webbie-tau.vercel.app',
+    ],
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'your-backend.up.railway.app', // ← заміни на свій Strapi backend
+        hostname: 'webstudio-landingpage-production.up.railway.app',
         pathname: '/uploads/**',
       },
       {
