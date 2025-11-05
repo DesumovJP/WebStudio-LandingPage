@@ -33,7 +33,7 @@ export default function Home() {
   
   // Generate placeholder images array for gallery (6 images per project)
   // Using placeholder SVG instead of external service for better performance
-  const galleryImages = current ? Array(6).fill(null).map((_, i) => `/landing-placeholder.svg`) : [];
+  const galleryImages = current ? Array(6).fill(null).map((_, i) => `https://res.cloudinary.com/deirtcyfx/image/upload/v1762340442/BCO_3fad0425_6f07_40a7_b899_ded8c4577134_f880591694.png`) : [];
   
   const handleImageClick = (index: number) => {
     setCurrentImageIndex(index);
@@ -242,7 +242,7 @@ export default function Home() {
                 {projects.map((p, i) => (
                   <Paper key={i} className="glass card project click" elevation={0} onClick={() => handleOpen(p)}>
                     <div className="project-card">
-                      <img src="/landing-placeholder.svg" alt={p.title} className="project-card-img" />
+                      <img src="https://res.cloudinary.com/deirtcyfx/image/upload/v1762340442/BCO_3fad0425_6f07_40a7_b899_ded8c4577134_f880591694.png" alt={p.title} className="project-card-img" />
                     </div>
                     <div className="card-body">
                       <div className="card-title-row">
@@ -274,7 +274,7 @@ export default function Home() {
               {petProjects.map((p, i) => (
                 <Paper key={i} className="glass card project click" elevation={0} onClick={() => handleOpen(p)}>
                   <div className="project-card">
-                    <img src="/landing-placeholder.svg" alt={p.title} className="project-card-img" />
+                    <img src="https://res.cloudinary.com/deirtcyfx/image/upload/v1762340442/BCO_3fad0425_6f07_40a7_b899_ded8c4577134_f880591694.png" alt={p.title} className="project-card-img" />
                   </div>
                   <div className="card-body">
                     <div className="card-title">{p.title}</div>
