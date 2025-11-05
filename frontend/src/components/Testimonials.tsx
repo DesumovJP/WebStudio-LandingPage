@@ -3,7 +3,7 @@
 import React from "react";
 import { Fade, Box } from "@mui/material";
 import { useDict } from "@/i18n/DictContext";
-import { getImageUrl } from "@/utils/urls";
+import StrapiImage from "@/components/StrapiImage";
 
 export default function Testimonials() {
   const { dict } = useDict();
@@ -39,7 +39,7 @@ export default function Testimonials() {
         <Fade key={index} in timeout={800}>
           <div>
             <div className="testimonial-avatar">
-              <img src={getImageUrl(t.avatar, '/landing-placeholder.svg')} alt={t.author} />
+              <StrapiImage src={t.avatar} alt={t.author} width={112} height={112} />
             </div>
             <p className="testimonial-quote">"{t.quote}"</p>
             <p className="testimonial-author">— {t.author}<span className="testimonial-role"> -  {t.role}</span></p>
