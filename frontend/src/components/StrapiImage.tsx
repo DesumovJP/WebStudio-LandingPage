@@ -24,6 +24,10 @@ export default function StrapiImage({
   ...rest
 }: StrapiImageProps) {
   const computed = React.useMemo(() => {
+    // If it's already a Cloudinary URL, use it directly without transformation
+    if (src && (src.startsWith('https://res.cloudinary.com') || src.startsWith('http://res.cloudinary.com'))) {
+      return src;
+    }
     const resolved = getImageUrl(src, fallbackSrc);
     return fixStrapiUrl(resolved);
   }, [src, fallbackSrc]);
