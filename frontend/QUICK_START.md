@@ -26,6 +26,11 @@ git push origin main
    - **Build Command**: `yarn build` ✅
    - **Output Directory**: `.next` ✅
 
+**⚠️ Якщо не бачите поле "Production Branch":**
+- Переконайтесь що в GitHub є коміти в `master` гілці
+- Якщо локально ви на `main`, запуште: `git push origin main:master`
+- Потім в Vercel → Settings → Git виберіть `master` як Production Branch
+
 ### Крок 3: Додайте Environment Variables
 
 В Settings → Environment Variables додайте:
