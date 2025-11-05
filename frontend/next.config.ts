@@ -1,14 +1,18 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Production optimizations
+  // ✅ Production optimizations
   compress: true,
+  poweredByHeader: false,
+  reactStrictMode: true,
+  productionBrowserSourceMaps: false,
 
-  // Image optimization
+  // ✅ Image optimization
   images: {
     domains: [
       'webstudio-landingpage-production.up.railway.app',
       'webbie-tau.vercel.app',
+      'res.cloudinary.com',
     ],
     remotePatterns: [
       {
@@ -22,17 +26,8 @@ const nextConfig: NextConfig = {
         pathname: '/uploads/**',
       },
     ],
-    formats: ['image/avif', 'image/webp'],
+    formats: ['image/webp'], // ❌ прибрано 'image/avif' для стабільності
   },
-
-  // Performance optimizations
-  poweredByHeader: false,
-
-  // React strict mode
-  reactStrictMode: true,
-
-  // Source maps (disable for smaller builds)
-  productionBrowserSourceMaps: false,
 };
 
 export default nextConfig;

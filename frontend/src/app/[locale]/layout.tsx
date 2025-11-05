@@ -27,7 +27,7 @@ export async function generateMetadata({
   const meta = dict?.meta || {};
   
   const siteUrl = env.SITE_URL;
-  const iconUrl = 'https://webstudio-landingpage-production.up.railway.app/uploads/pawukpng_6ba2f27ef6.png';
+  const iconUrl = 'https://res.cloudinary.com/deirtcyfx/image/upload/v1762338789/pawukpng_42af27088a.png';
   
   return {
     title: meta.title ?? 'Webbie — Web & App Development',
