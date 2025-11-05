@@ -453,7 +453,7 @@ a {
   pointer-events: none;
   z-index: 0;
   opacity: 0.08;
-  background: url('https://webstudio-landingpage-production.up.railway.app/uploads/BCO_1a37bfa3_3a23_4467_a32d_159e5744768b_7534f391aa.png') center / cover no-repeat;
+  background: url('https://res.cloudinary.com/deirtcyfx/image/upload/v1762339021/BCO_1a37bfa3_3a23_4467_a32d_159e5744768b_2d3d6f9011.png') center / cover no-repeat;
   filter: blur(0.6vh) saturate(130%);
   mix-blend-mode: multiply;
 }
@@ -474,7 +474,7 @@ a {
   pointer-events: none;
   z-index: 0;
   opacity: 0.08;
-  background: url('https://webstudio-landingpage-production.up.railway.app/uploads/BCO_1a37bfa3_3a23_4467_a32d_159e5744768b_7534f391aa.png') center / cover no-repeat;
+  background: url('https://res.cloudinary.com/deirtcyfx/image/upload/v1762339021/BCO_1a37bfa3_3a23_4467_a32d_159e5744768b_2d3d6f9011.png') center / cover no-repeat;
   filter: blur(0.6vh) saturate(130%);
   mix-blend-mode: multiply;
 }
