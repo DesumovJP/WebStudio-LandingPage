@@ -434,7 +434,7 @@ export default function Home() {
             <div className="contact-grid mt-3">
               <div>
                 <div className="contact-image-wrap">
-                  <img src={getImageUrl('cat_computer_9382ba0873.gif')} alt="cat" className="contact-hero-img" />
+                  <img src={getImageUrl('cat_computer_06b38cd6de.gif')} alt="cat" className="contact-hero-img" />
                   <div className="contact-overlay">
                     <h3 className="heading-md">{dict?.sections?.contact?.now ?? ''}</h3>
                   </div>
@@ -505,7 +505,7 @@ export default function Home() {
         </div>
             <div className="contact-telegram text-center mt-4">
               <img
-                src={getImageUrl('BCO_1a37bfa3_3a23_4467_a32d_159e5744768b_2327e8862c.png')}
+                src={getImageUrl('pawukpng_5b90ccb625.png')}
                 alt="Webbie logo"
                 className="contact-logo"
               />
