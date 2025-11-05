@@ -2,6 +2,7 @@
 
 import Image, { ImageProps } from "next/image";
 import { getImageUrl } from "@/utils/urls";
+import { fixStrapiUrl } from "@/utils/fixStrapiUrl";
 import React from "react";
 
 type StrapiImageProps = Omit<ImageProps, "src"> & {
@@ -9,21 +10,6 @@ type StrapiImageProps = Omit<ImageProps, "src"> & {
   fallbackSrc?: string;
   useImg?: boolean; // fallback to plain <img>
 };
-
-function normalizeUrl(url: string): string {
-  if (!url) return url;
-  // strip locale prefixes like /uk/ or /en/
-  if (url.startsWith("/uk/")) url = url.replace("/uk/", "/");
-  if (url.startsWith("/en/")) url = url.replace("/en/", "/");
-  // upgrade http to https
-  if (url.startsWith("http://")) url = url.replace("http://", "https://");
-  // fix stale Railway subdomain
-  url = url.replace(
-    "webstudio-landingpage.up.railway.app",
-    "webstudio-landingpage-production.up.railway.app"
-  );
-  return url;
-}
 
 export default function StrapiImage({
   src,
@@ -39,7 +25,7 @@ export default function StrapiImage({
 }: StrapiImageProps) {
   const computed = React.useMemo(() => {
     const resolved = getImageUrl(src, fallbackSrc);
-    return normalizeUrl(resolved);
+    return fixStrapiUrl(resolved);
   }, [src, fallbackSrc]);
 
   if (useImg) {
