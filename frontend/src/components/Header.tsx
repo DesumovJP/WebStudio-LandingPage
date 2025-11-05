@@ -8,7 +8,8 @@ import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import LanguageSwitcher from "./LanguageSwitcher";
 import { useDict } from "@/i18n/DictContext";
-import { getImageUrl } from "@/utils/urls";
+// Cloudinary logo URL - using directly to avoid any URL transformation
+const LOGO_URL = 'https://res.cloudinary.com/deirtcyfx/image/upload/v1762338789/pawukpng_42af27088a.png';
 
 export default function Header() {
   const { dict } = useDict();
@@ -51,7 +52,7 @@ export default function Header() {
     <AppBar position="sticky" color="transparent" elevation={0} className="header">
       <Toolbar className="container header-toolbar">
         <Link href={`/${currentLocale ?? ''}` || '/uk'} aria-label="Studio brand" className="brand heading-lg brand-wrap header-left">
-          <img src={getImageUrl('pawukpng_6ba2f27ef6.png')} alt="Webbie logo" className="brand-logo" />
+          <img src={LOGO_URL} alt="Webbie logo" className="brand-logo" />
           <span>{dict?.nav?.brand ?? 'Webbie'}</span>
         </Link>
         <nav className="nav nav-desktop">
