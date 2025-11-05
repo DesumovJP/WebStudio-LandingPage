@@ -51,7 +51,7 @@ export default function Header() {
     <AppBar position="sticky" color="transparent" elevation={0} className="header">
       <Toolbar className="container header-toolbar">
         <Link href={`/${currentLocale ?? ''}` || '/uk'} aria-label="Studio brand" className="brand heading-lg brand-wrap header-left">
-          <img src={getImageUrl('pawukpng_89b3bd786e.png')} alt="Webbie logo" className="brand-logo" />
+          <img src={getImageUrl('BCO_1a37bfa3_3a23_4467_a32d_159e5744768b_2327e8862c.png')} alt="Webbie logo" className="brand-logo" />
           <span>{dict?.nav?.brand ?? 'Webbie'}</span>
         </Link>
         <nav className="nav nav-desktop">

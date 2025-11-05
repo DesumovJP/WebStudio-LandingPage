@@ -27,7 +27,7 @@ export async function generateMetadata({
   const meta = dict?.meta || {};
   
   const siteUrl = env.SITE_URL;
-  const iconUrl = env.API_URL ? `${env.API_URL}/uploads/pawukpng_89b3bd786e.png` : '/favicon.ico';
+  const iconUrl = env.API_URL ? `${env.API_URL}/uploads/BCO_1a37bfa3_3a23_4467_a32d_159e5744768b_2327e8862c.png` : '/favicon.ico';
   
   return {
     title: meta.title ?? 'Webbie — Web & App Development',
