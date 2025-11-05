@@ -505,7 +505,7 @@ export default function Home() {
         </div>
             <div className="contact-telegram text-center mt-4">
               <img
-                src={getImageUrl('pawukpng_5b90ccb625.png')}
+                src={getImageUrl('pawukpng_6ba2f27ef6.png')}
                 alt="Webbie logo"
                 className="contact-logo"
               />
