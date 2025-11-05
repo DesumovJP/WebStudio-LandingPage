@@ -16,7 +16,12 @@ function normalizeUrl(url: string): string {
   if (url.startsWith("/uk/")) url = url.replace("/uk/", "/");
   if (url.startsWith("/en/")) url = url.replace("/en/", "/");
   // upgrade http to https
-  if (url.startsWith("http://")) return url.replace("http://", "https://");
+  if (url.startsWith("http://")) url = url.replace("http://", "https://");
+  // fix stale Railway subdomain
+  url = url.replace(
+    "webstudio-landingpage.up.railway.app",
+    "webstudio-landingpage-production.up.railway.app"
+  );
   return url;
 }
 
