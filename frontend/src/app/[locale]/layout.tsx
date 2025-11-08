@@ -74,10 +74,10 @@ export default async function LocaleLayout({
   // Fetch projects from Strapi
   const strapiProjects = await getProjects();
   
-  // Merge Strapi projects with dict (Strapi projects take priority)
+  // Use only Strapi projects, never fallback to mock projects
   const mergedDict = {
     ...dict,
-    projects: strapiProjects.length > 0 ? strapiProjects : dict.projects,
+    projects: strapiProjects, // Always use Strapi projects, even if empty array
   };
 
   return (
