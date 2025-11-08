@@ -25,14 +25,6 @@
     "metric": {
       "type": "string"
     },
-    "mainImage": {
-      "type": "media",
-      "multiple": false,
-      "required": false,
-      "allowedTypes": [
-        "images"
-      ]
-    },
     "gallery": {
       "type": "media",
       "multiple": true,
