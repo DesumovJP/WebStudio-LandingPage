@@ -8,7 +8,9 @@ export default [
       origin: [
         'http://localhost:3000',
         'http://localhost:3001',
-        'https://webstudio-landingpage.vercel.app', // ← твій Vercel домен
+        'https://webbie-tau.vercel.app', // Production Vercel domain
+        'https://webstudio-landingpage.vercel.app', // Fallback Vercel domain
+        /\.vercel\.app$/, // Allow all Vercel preview deployments
       ],
       credentials: true,
     },
