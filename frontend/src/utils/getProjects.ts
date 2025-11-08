@@ -21,21 +21,37 @@ export type StrapiProject = {
 
 type GraphQLResponse = {
   data?: {
-    projects: Array<{
-      documentId: string;
-      title: string;
-      subtitle?: string;
-      description?: string | any[]; // Can be string (HTML) or array (Blocks)
-      metric?: string;
-      stack?: string[] | null;
-      done?: string[] | null;
-      benefits?: string[] | null;
-      outcome?: string;
-      gallery?: Array<{
-        url: string;
-        alternativeText?: string;
+    projects: {
+      data: Array<{
+        id: string;
+        documentId: string;
+        attributes: {
+          title: string;
+          subtitle?: string;
+          description?: string | any[]; // Can be string (HTML) or array (Blocks)
+          metric?: string;
+          stack?: string[] | null;
+          done?: string[] | null;
+          benefits?: string[] | null;
+          outcome?: string;
+          gallery?: {
+            data: Array<{
+              attributes: {
+                url: string;
+                alternativeText?: string;
+              };
+            }>;
+          };
+          mainImage?: {
+            data: {
+              attributes: {
+                url: string;
+              };
+            };
+          };
+        };
       }>;
-    }>;
+    };
   };
   errors?: Array<{
     message: string;
@@ -100,23 +116,39 @@ function richTextToPlainText(richText: string | any[] | undefined): string {
 
 /**
  * GraphQL query to fetch projects
- * description is Rich Text (Blocks) - GraphQL will return it as array
+ * Using REST API structure for Strapi v4
  */
 const PROJECTS_QUERY = `
   query GetProjects {
     projects {
-      documentId
-      title
-      subtitle
-      description
-      metric
-      stack
-      done
-      benefits
-      outcome
-      gallery {
-        url
-        alternativeText
+      data {
+        id
+        documentId
+        attributes {
+          title
+          subtitle
+          description
+          metric
+          stack
+          done
+          benefits
+          outcome
+          gallery {
+            data {
+              attributes {
+                url
+                alternativeText
+              }
+            }
+          }
+          mainImage {
+            data {
+              attributes {
+                url
+              }
+            }
+          }
+        }
       }
     }
   }
@@ -134,9 +166,10 @@ export async function getProjects(): Promise<StrapiProject[]> {
 
     const graphqlUrl = `${env.API_URL}/graphql`;
     
-    if (process.env.NODE_ENV === 'development') {
-      console.log('🔍 Fetching projects from GraphQL:', graphqlUrl);
-    }
+    // Log in both dev and production for debugging
+    console.log('🔍 Fetching projects from GraphQL:', graphqlUrl);
+    console.log('🔍 API_URL:', env.API_URL);
+    console.log('🔍 NODE_ENV:', process.env.NODE_ENV);
 
     const response = await fetch(graphqlUrl, {
       method: 'POST',
@@ -155,6 +188,7 @@ export async function getProjects(): Promise<StrapiProject[]> {
     if (!response.ok) {
       const errorText = await response.text();
       console.error('❌ Failed to fetch projects:', response.status, response.statusText);
+      console.error('URL:', graphqlUrl);
       console.error('Response:', errorText);
       
       // If 401, log helpful message about permissions
@@ -162,6 +196,13 @@ export async function getProjects(): Promise<StrapiProject[]> {
         console.warn('⚠️ 401 Unauthorized: Check Strapi GraphQL permissions for Public role');
         console.warn('   Go to Strapi Admin → Settings → Users & Permissions → Roles → Public');
         console.warn('   Enable "find" and "findOne" for Project content type');
+      }
+      
+      // If 404, check if GraphQL plugin is enabled
+      if (response.status === 404) {
+        console.warn('⚠️ 404 Not Found: Check if GraphQL plugin is enabled in Strapi');
+        console.warn('   Go to Strapi Admin → Plugins → GraphQL → Enable');
+        console.warn('   Or check if API_URL is correct:', env.API_URL);
       }
       
       return [];
@@ -174,36 +215,38 @@ export async function getProjects(): Promise<StrapiProject[]> {
       return [];
     }
 
-    const projects = result.data?.projects || [];
+    const projectsData = result.data?.projects?.data || [];
 
     if (process.env.NODE_ENV === 'development') {
-      console.log('✅ Projects fetched:', projects.length, 'items');
+      console.log('✅ Projects fetched:', projectsData.length, 'items');
     }
 
-    if (projects.length === 0) {
+    if (projectsData.length === 0) {
       if (process.env.NODE_ENV === 'development') {
         console.warn('⚠️ No projects found in Strapi. Make sure:');
         console.warn('  1. Project is created in Strapi');
         console.warn('  2. Project is published (not draft)');
         console.warn('  3. GraphQL permissions are set for Public role');
       }
+      // In production, return empty array instead of fallback to mock projects
       return [];
     }
 
-    return projects.map((item) => {
+    return projectsData.map((item) => {
+      const attributes = item.attributes;
       if (process.env.NODE_ENV === 'development') {
-        console.log('🔍 Processing project:', item.title, {
-          hasGallery: !!item.gallery && item.gallery.length > 0,
-          hasDescription: !!item.description,
-          descriptionType: Array.isArray(item.description) ? 'array' : typeof item.description,
+        console.log('🔍 Processing project:', attributes.title, {
+          hasGallery: !!attributes.gallery?.data && attributes.gallery.data.length > 0,
+          hasDescription: !!attributes.description,
+          descriptionType: Array.isArray(attributes.description) ? 'array' : typeof attributes.description,
         });
       }
 
       // Get gallery images
       const galleryImages: string[] = [];
-      if (item.gallery && Array.isArray(item.gallery)) {
-        item.gallery.forEach((img: any) => {
-          const url = img.url || '';
+      if (attributes.gallery?.data && Array.isArray(attributes.gallery.data)) {
+        attributes.gallery.data.forEach((img: any) => {
+          const url = img.attributes?.url || '';
           if (url) {
             const fullUrl = getImageUrl(url);
             if (process.env.NODE_ENV === 'development') {
@@ -214,19 +257,22 @@ export async function getProjects(): Promise<StrapiProject[]> {
         });
       }
 
-      // Main image is the first image from gallery
-      const mainImage = galleryImages[0] || getImageUrl(undefined);
+      // Main image from mainImage field or first image from gallery
+      const mainImageUrl = attributes.mainImage?.data?.attributes?.url;
+      const mainImage = mainImageUrl 
+        ? getImageUrl(mainImageUrl) 
+        : (galleryImages[0] || getImageUrl(undefined));
 
       const processedProject = {
-        documentId: item.documentId,
-        title: item.title || '',
-        sub: item.subtitle || '',
-        desc: richTextToPlainText(item.description) || '',
-        metric: item.metric || undefined,
-        stack: Array.isArray(item.stack) ? item.stack : undefined,
-        done: Array.isArray(item.done) ? item.done : [],
-        benefits: Array.isArray(item.benefits) ? item.benefits : [],
-        outcome: item.outcome || '',
+        documentId: item.documentId || item.id,
+        title: attributes.title || '',
+        sub: attributes.subtitle || '',
+        desc: richTextToPlainText(attributes.description) || '',
+        metric: attributes.metric || undefined,
+        stack: Array.isArray(attributes.stack) ? attributes.stack : undefined,
+        done: Array.isArray(attributes.done) ? attributes.done : [],
+        benefits: Array.isArray(attributes.benefits) ? attributes.benefits : [],
+        outcome: attributes.outcome || '',
         gallery: galleryImages.length > 0 ? galleryImages : [mainImage], // Fallback to main image if no gallery
         mainImage,
       };
@@ -237,6 +283,7 @@ export async function getProjects(): Promise<StrapiProject[]> {
           hasGallery: galleryImages.length > 0,
           hasMainImage: !!mainImage,
           stackCount: processedProject.stack?.length || 0,
+          galleryCount: galleryImages.length,
         });
       }
 

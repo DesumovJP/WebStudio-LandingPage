@@ -11,11 +11,13 @@ const isDevelopment = process.env.NODE_ENV !== 'production';
 export const env = {
   // API & Backend
   // Development: локальний Strapi на порту 1337
-  // Production: Railway Strapi URL з NEXT_PUBLIC_API_URL
+  // Production: Railway Strapi URL з NEXT_PUBLIC_API_URL або fallback на production Railway
   API_URL: 
     process.env.NEXT_PUBLIC_API_URL || 
     process.env.STRAPI_URL || 
-    (isDevelopment ? 'http://localhost:1337' : ''),
+    (isDevelopment 
+      ? 'http://localhost:1337' 
+      : 'https://webstudio-landingpage-production.up.railway.app'),
   
   // Resend Email
   RESEND_API_KEY: process.env.RESEND_API_KEY || '',
