@@ -5,6 +5,7 @@ import { AppBar, Toolbar, Button, IconButton } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { usePathname } from "next/navigation";
 import LanguageSwitcher from "./LanguageSwitcher";
 import { useDict } from "@/i18n/DictContext";
@@ -15,6 +16,7 @@ export default function Header() {
   const { dict } = useDict();
   const [open, setOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
+  const [mounted, setMounted] = useState(false);
   
   const toggle = (v: boolean) => () => {
     if (v) {
@@ -30,13 +32,24 @@ export default function Header() {
   };
 
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
     if (open && !isClosing) {
       document.body.style.overflow = 'hidden';
+      // Prevent body scroll on mobile
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
     } else {
       document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
     }
     return () => {
       document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
     };
   }, [open, isClosing]);
   const pathname = usePathname() || "/";
@@ -52,8 +65,13 @@ export default function Header() {
     <AppBar position="sticky" color="transparent" elevation={0} className="header">
       <Toolbar className="container header-toolbar">
         <Link href={`/${currentLocale ?? ''}` || '/uk'} aria-label="Studio brand" className="brand heading-lg brand-wrap header-left">
-          <img src={LOGO_URL} alt="Webbie logo" className="brand-logo" />
-          <span>{dict?.nav?.brand ?? 'Webbie'}</span>
+              <img src={LOGO_URL} alt="Webbie logo" className="brand-logo" loading="eager" decoding="sync" fetchPriority="high" />
+          <div className="brand-text-wrapper">
+            <span>{dict?.nav?.brand ?? 'Webbie'}</span>
+            {mounted && dict?.nav?.slogan ? (
+              <span className="brand-slogan">{dict.nav.slogan}</span>
+            ) : null}
+          </div>
         </Link>
         <nav className="nav nav-desktop">
           {items.slice(0,3).map((i) => (
@@ -68,8 +86,8 @@ export default function Header() {
             <MenuIcon />
           </IconButton>
         </div>
-        {/* Mobile Menu Modal */}
-        {open && (
+        {/* Mobile Menu Modal - rendered via Portal to body */}
+        {mounted && open && createPortal(
           <>
             <div className={`mobile-menu-overlay ${isClosing ? 'closing' : ''}`} onClick={toggle(false)}></div>
             <div className={`mobile-menu-modal ${isClosing ? 'closing' : ''}`}>
@@ -91,7 +109,8 @@ export default function Header() {
                 ))}
               </nav>
             </div>
-          </>
+          </>,
+          document.body
         )}
       </Toolbar>
     </AppBar>

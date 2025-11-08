@@ -38,6 +38,8 @@ export default function StrapiImage({
         src={computed}
         alt={alt}
         className={className}
+        loading="lazy"
+        decoding="async"
         onError={(e) => {
           const target = e.currentTarget as HTMLImageElement;
           if (target.src !== fallbackSrc) target.src = fallbackSrc;
@@ -58,6 +60,7 @@ export default function StrapiImage({
       height={safeHeight}
       className={className}
       priority={priority}
+      loading={priority ? undefined : 'lazy'}
       unoptimized={unoptimized}
       {...rest}
     />

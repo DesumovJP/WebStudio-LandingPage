@@ -5,22 +5,40 @@
     "process": "Process",
     "contact": "Contact",
     "brand": "Webbie",
+    "slogan": "Weaving your success",
     "contactCta": "Start a project",
     "viewWork": "View work"
   },
   "hero": {
     "title": "We build websites and apps that bring customers",
-    "desc": "We combine strategic design, clean code, and a fast launch. You get a turnkey product: from idea and prototype to deployment and support. 🇺🇦 Ukrainian team based in Kyiv.",
-    "services": ["Websites", "Web apps", "Mobile apps", "(Android & iOS)"]
+    "desc": "Webbie is your partner in digital growth. We don't just develop: we create tools that bring customers and increase revenue. Get a ready product in weeks, not months, with quality guarantee and support at every stage.",
+    "services": ["Websites", "Web apps", "Mobile apps", "(Android & iOS)"],
+    "stats": {
+      "projects": "20+ successful projects",
+      "rating": "⭐ 4.8/5 from clients",
+      "since": "Working since 2023"
+    }
   },
   "sections": {
     "lastProjects": "Latest projects",
     "petProjects": "Pet projects",
     "howWeWork": "How we work",
+    "testimonials": {
+      "title": "What clients say",
+      "stats": {
+        "projects": "20+",
+        "projectsLabel": "successful projects",
+        "rating": "4.8/5",
+        "ratingLabel": "average rating",
+        "since": "2023",
+        "sinceLabel": "years in market"
+      }
+    },
     "pricing": {
       "title": "Choose the approach for your product",
       "subtitle": "Transparent pricing with no hidden fees. Every plan includes 30 days of support after launch.",
-      "popularBadge": "Popular"
+      "popularBadge": "Popular",
+      "recommendedBadge": "Recommended"
     },
     "faq": {
       "title": "Frequently Asked Questions",
@@ -30,22 +48,27 @@
       "title": "Ready to grow? Tell us about your idea.",
       "subtitle": "We will respond within 24 hours and send a launch plan with budget.",
       "now": "Our team right now:",
+      "marketingText": "We work on projects for clients from different countries. Each project is a unique story: from startups to large businesses. We create not just websites, but growth tools that deliver real results.",
+      "marketingTextExtended": "The Webbie team works with you in direct contact via Telegram. Every week we show progress, discuss changes and next steps. You see what's being done and can make edits during development. We don't promise instant results — we work systematically: from task analysis to launch and support. Each stage is agreed with you so the result meets expectations.",
       "telegram": "Or write to us on Telegram right now",
-      "button": "Click"
+      "button": "Click",
+      "responseTime": "Usually respond within 2 hours",
+      "teamStatus": "Team online",
+      "guarantee": "Quality guarantee & 30 days support"
     }
   },
   "servicesBlock": {
     "full": {
       "title": "Turnkey",
-      "desc": "UX/UI, frontend, backend, integrations and analytics — one team, one deadline."
+      "desc": "Complete turnkey solution: from design to launch. All stages in one team — no subcontractor search, no delays, with guaranteed results."
     },
     "fast": {
       "title": "Fast start",
-      "desc": "First version in weeks, not months. We focus on business metrics, not extra screens."
+      "desc": "Fast MVP launch: get a working product in weeks. Focus on revenue-generating features, not lengthy development."
     },
     "scale": {
       "title": "Scale",
-      "desc": "Architecture ready for growth: Next.js + Strapi + modern infrastructure."
+      "desc": "Without limits: expand functionality and integrate without rewriting code. Architecture ready for millions of users and complex business processes."
     }
   },
   "process": [
@@ -53,7 +76,7 @@
       "num": "1",
       "name": "Research",
       "title": "Deep dive into the business",
-      "desc": "Interviews, competitor and keyword analysis. We form the USP, content structure and SEO core so clients find you organically."
+      "desc": "Interviews, competitor and keyword analysis. We form your unique value proposition, content structure and SEO core so clients find you organically."
     },
     {
       "num": "2",
@@ -65,27 +88,28 @@
       "num": "3",
       "name": "Development",
       "title": "Best engineering practices",
-      "desc": "Next.js + Strapi, accessibility, speed, SSG/ISR, analytics and integrations. Clean code and scalable architecture."
+      "desc": "Modern technologies and best practices: fast loading, accessibility, performance optimization. Weekly demos, transparent process and ability to make changes on the fly. Your product is ready for millions of users from day one."
     },
     {
       "num": "4",
       "name": "Launch & growth",
       "title": "SEO and ongoing support",
-      "desc": "Technical SEO, Schema.org markup, Core Web Vitals, content plan. Weekly demos and a transparent backlog in a shared tool."
+      "desc": "Your site appears in Google faster than competitors thanks to technical SEO optimization and Core Web Vitals. We set up Schema.org markup and content plan so clients find you for free. You see progress weekly and can make changes in real time."
     }
   ],
   "pricing": [
     {
       "title": "Starter",
-      "price": "from $250",
+      "price": "$250",
       "time": "up to 7 days",
-      "subtitle": "Perfect for testing an idea",
-      "desc": "Minimal landing page or one‑pager. Fast launch, clean code, technical SEO foundation. Ready to scale.",
+      "subtitle": "Fast start for testing an idea",
+      "desc": "MVP in a week: minimalist website with effective content and conversion focus. Perfect for testing an idea and quick launch. Clean code, technical SEO foundation and ready to scale.",
       "features": [
+        "MVP for quick idea testing",
         "UX prototype and responsive design",
-        "Next.js frontend with SSG (Core Web Vitals)",
+        "Fast loading (Core Web Vitals)",
         "Technical SEO optimization",
-        "Mobile version with fast loading",
+        "Analytics and conversion tracking",
         "30 days of technical support"
       ]
     },
@@ -94,68 +118,65 @@
       "price": "from $500",
       "time": "up to 3 weeks",
       "subtitle": "Most popular choice",
-      "desc": "Full website or e‑commerce with an admin panel to manage products. User auth, payment integrations, sales analytics. Marketing‑ready.",
+      "desc": "High‑performance website with extensive functionality: admin panel for product management, user authentication, payment system integrations, sales analytics. Ready for active marketing and scaling.",
       "features": [
-        "React + Next.js frontend",
-        "Strapi CMS — interactive admin panel",
-        "User authentication and access roles",
-        "Integrations: payments (Stripe/WayForPay), CRM, analytics",
+        "Modern frontend with responsive design",
+        "CMS admin panel for content management",
+        "User authentication and access rights",
+        "Payment system integration. Cryptocurrency payments",
+        "CRM, sales analytics, email marketing",
         "SEO foundation + content plan",
-        "30 days of support + 2 free edits"
+        "30 days support + 2 free revisions"
       ]
     },
     {
       "title": "Scale",
       "price": "from $750",
       "time": "from 3 weeks",
-      "subtitle": "For growing businesses",
-      "desc": "Enterprise level: design system, scalable architecture, mobile app. Ready for millions of users.",
+      "subtitle": "Enterprise level",
+      "desc": "Premium solution for ambitious projects: scalable architecture that grows with your business. Ready for millions of users and complex business processes from day one.",
       "features": [
-        "Flexible design system and component architecture",
-        "React / React Native frontend",
-        "Node.js backend + PostgreSQL",
-        "High performance, security, monitoring",
-        "API‑first approach for integrations",
-        "30 days of support + monthly consultations"
+        "Modular design system: add features without rewriting code",
+        "Cross‑platform frontend: web and mobile apps in one project",
+        "Powerful backend: handle high loads and complex queries",
+        "Enterprise level: performance, security, 24/7 monitoring",
+        "Open architecture: integrate any services via API",
+        "Personal support: 30 days + monthly strategic consultations"
       ]
     }
   ],
   "faq": [
     {
       "q": "How long does a project take?",
-      "a": "It depends on complexity and scope: a simple landing — up to 7 days (Starter), e‑commerce with CMS and admin — up to 3 weeks (Business), complex product with a design system — from 3 weeks (Scale). After a detailed task analysis we send an exact plan with deadlines for each stage: research, design, development, testing, launch. Every project starts with clarifying requirements and creating a spec to avoid misunderstandings and delays."
+      "a": "We work fast, but with quality. MVP in a week, full e‑commerce — up to 3 weeks, complex product — from 3 weeks. Our experience shows: 80% of clients see first results within a week. After deep analysis of your business, we provide an exact plan with deadlines for each stage. Every project starts with a detailed spec that guarantees no misunderstandings or delays. We don't promise unrealistic deadlines — we work efficiently and transparently."
     },
     {
       "q": "Can we edit content ourselves after launch?",
-      "a": "Yes. Business and Scale include an interactive admin panel (Strapi CMS) where you can edit text, products, categories, blog posts, images without developers. The panel is intuitive, similar to working with documents. We also onboard your team: demo session, video guides and documentation. In Starter, content can be changed in code or we can add a basic admin panel as an option."
+      "a": "Absolutely. In Business and Scale plans, you get a powerful admin panel that works like a regular document editor — intuitively and without technical knowledge. Edit text, products, categories, blog posts, images in real time without involving developers. Convenient interface, understandable even without experience working with technical systems. We don't just provide a panel — we train your team: personal demo session, video guides, and detailed documentation. Result: you're completely independent in content management. In Starter, content is edited via code or we can add a basic admin panel."
     },
     {
       "q": "What does post‑launch support include?",
-      "a": "Support includes: security and dependency updates, bug fixes, product growth consulting, Core Web Vitals monitoring and performance, SEO optimization and analytics. The first 30 days after launch are included for all plans. After that, you can continue monthly or on demand. Scale includes monthly consultations and priority support. Details are agreed on project start and fixed in the contract."
+      "a": "We don't leave you after launch. First 30 days of support included in all plans: security updates, bug fixes, growth consulting, Core Web Vitals monitoring and performance, SEO optimization and analytics. In Scale plan additionally — monthly strategic consultations and priority support. Our approach: proactive support. We don't wait for things to break — we monitor your product 24/7 and prevent issues. Support details are fixed in the contract so you know exactly what to expect."
     },
     {
       "q": "How do you handle SEO optimization?",
-      "a": "We lay the SEO foundation from day one. Technical optimization includes: SSG/ISR for speed, structured Schema.org markup for better indexing, Core Web Vitals optimization (LCP, FID, CLS), semantic HTML, proper meta tags and Open Graph. We also provide a content plan and strategy for organic growth, keyword strategy, and set up analytics to track positions. Business and Scale include XML sitemap, robots.txt, and Google Search Console integration."
+      "a": "SEO isn't an add‑on, it's the foundation. We build it from day one using the latest practices: SSG/ISR for instant speed, structured Schema.org markup for better indexing, Core Web Vitals optimization (LCP, FID, CLS) for top Google positions. Result: our clients appear in search within 2–3 weeks after launch. Additionally, we provide a content plan, keyword strategy, and set up analytics to track positions. In Business and Scale — full Google Search Console integration, XML sitemap, robots.txt. We don't just do SEO — we ensure organic traffic that converts into clients."
     },
     {
       "q": "Do you work with existing systems (CRM, payments)?",
-      "a": "Yes. We integrate your site with popular CRMs (HubSpot, Salesforce, Pipedrive), payment systems (Stripe, WayForPay, LiqPay, PayPal), analytics (Google Analytics, Yandex.Metrika, Mixpanel), email marketing (Mailchimp, SendGrid), and other business tools. We use REST and GraphQL for integrations. For custom systems, we build integrations to your requirements. All integrations are tested before launch and documented for your team."
+      "a": "Yes, and it's our strength. We integrate your site with any systems: CRM, payment systems, analytics, email marketing. If you have a custom system — we build integration to your requirements. All integrations are tested before launch and documented for your team. Result: your site becomes the central hub for all business processes."
     },
     {
       "q": "What if we need to scale the project?",
-      "a": "The architecture is prepared for growth from the start thanks to modern technologies (Next.js, Strapi, PostgreSQL). We can add features, a mobile app (React Native for iOS and Android), expand the backend, integrate additional services, add multilingual support, implement complex business logic. Scaling happens without rewriting code — we add modules to the existing structure. We also optimize performance via caching, CDN, and horizontal scaling when needed."
+      "a": "Our architecture is ready for millions of users from the start. We use a modular approach: add new features, mobile app (React Native for iOS and Android), expand backend, integrate additional services, add multilingual support — all without rewriting code. We simply add new modules to the existing structure. Performance is optimized via caching, CDN, and horizontal server scaling. Result: your product grows with your business without technical debt or expensive rewrites. Our clients scale from startups to large companies on the same architecture."
     },
     {
       "q": "Which technologies do you use?",
-      "a": "Frontend: Next.js, React, TypeScript for web apps; React Native for mobile (iOS and Android). Backend: Node.js, Strapi CMS for admin and content, PostgreSQL database. Integrations: GraphQL and REST APIs. Infrastructure: Vercel, AWS, or others per your preference. We also use modern tools: Zustand for state, Framer Motion for animations. All technologies are up‑to‑date with strong communities for long‑term support."
-    },
-    {
-      "q": "What does your process look like?",
-      "a": "The process is split into stages: 1) Research — business goals, competitors, audience, USP; 2) Design — prototypes, design system, responsive layouts; 3) Development — iterative development with weekly demos; 4) Testing — devices and browsers; 5) Launch — deploy, setup, access handover. Weekly demos show progress, changes and next steps. We use Trello or other tools for transparency. Communication is via Telegram or email, as you prefer."
+      "a": "We work with the most modern and reliable industry technologies. Frontend: Next.js, React, TypeScript for web apps; React Native for mobile (iOS and Android). Backend: Node.js, Strapi CMS for admin panels, PostgreSQL database. Integrations: GraphQL and REST API. Infrastructure: Vercel, AWS, or other platforms per your preference. Modern tools: Zustand for state, Framer Motion for animations. All technologies have large communities, active support, and long‑term perspective. We don't use outdated solutions — only what ensures speed, security, and scalability."
     },
     {
       "q": "How much does a project cost?",
-      "a": "Price depends on scope and complexity. Starter from $250 (simple landing), Business from $500 (e‑commerce with CMS), Scale from $750 (complex product). After describing your task we provide a detailed estimate broken down by stage and options. Final price is fixed in the contract before work starts. Payment can be per stage or split before start and before launch. Flexible terms are discussed individually."
+      "a": "Transparent pricing with no hidden fees. Starter $250 (MVP in a week), Business from $500 (e‑commerce with CMS), Scale from $750 (enterprise level). After describing your task, we provide a detailed estimate broken down by stage and options. Final price is fixed in the contract before work starts — no surprises. Payment can be per stage (before each stage starts) or split before start and before launch. Flexible terms are discussed individually. Our approach: you pay for results, not process. Every dollar is invested in your business growth."
     }
   ],
   "contact": {
@@ -164,7 +185,7 @@
       "email": "Email",
       "company": "Company / Niche",
       "about": "Briefly about the task",
-      "send": "Send",
+      "send": "Start project",
       "sending": "Sending...",
       "success": "Message sent successfully!",
       "error": "Failed to send message. Please try again.",
@@ -272,7 +293,7 @@
       "num": "1",
       "name": "Research",
       "title": "Deep dive into the business",
-      "desc": "Interviews, competitor and keyword analysis. We form the USP, content structure and SEO core so clients find you organically."
+      "desc": "Interviews, competitor and keyword analysis. We form your unique value proposition, content structure and SEO core so clients find you organically."
     },
     {
       "num": "2",
@@ -284,13 +305,13 @@
       "num": "3",
       "name": "Development",
       "title": "Best engineering practices",
-      "desc": "Next.js + Strapi, accessibility, speed, SSG/ISR, analytics and integrations. Clean code and scalable architecture."
+      "desc": "Modern technologies and best practices: fast loading, accessibility, performance optimization. Weekly demos, transparent process and ability to make changes on the fly. Your product is ready for millions of users from day one."
     },
     {
       "num": "4",
       "name": "Launch & growth",
       "title": "SEO and ongoing support",
-      "desc": "Technical SEO, Schema.org markup, Core Web Vitals, content plan. Weekly demos and a transparent backlog in a shared tool."
+      "desc": "Your site appears in Google faster than competitors thanks to technical SEO optimization and Core Web Vitals. We set up Schema.org markup and content plan so clients find you for free. You see progress weekly and can make changes in real time."
     }
   ],
   "testimonials": [
