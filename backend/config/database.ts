@@ -9,7 +9,7 @@ export default ({ env }) => ({
         'postgresql://postgres:password@localhost:5432/strapi'
       ),
       ssl: env.bool('DATABASE_SSL', true)
-        ? { rejectUnauthorized: false } // Railway вимагає SSL без перевірки сертифіката
+        ? { rejectUnauthorized: false } // Railway вимагає SSL без перевірки сертифіката (працює з internal та external connections)
         : false,
     },
     pool: {
