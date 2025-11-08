@@ -287,7 +287,7 @@ export default function Home() {
               <h2 className="heading-lg">{dict?.sections?.lastProjects ?? '...'}</h2>
               <div className="grid grid-3 mt-3">
                 {projects.map((p, i) => {
-                  // Main image is the first image from gallery (preview)
+                  // Use mainImage if available, otherwise fallback to first gallery image
                   const previewImage = (p as any).mainImage || (p as any).gallery?.[0] || 'https://res.cloudinary.com/deirtcyfx/image/upload/v1762340442/BCO_3fad0425_6f07_40a7_b899_ded8c4577134_f880591694.png';
                   return (
                   <Paper key={(p as any).documentId || i} className="glass card project click" elevation={0} onClick={() => handleOpen(p)}>
