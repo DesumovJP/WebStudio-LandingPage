@@ -146,8 +146,10 @@ export async function getProjects(): Promise<StrapiProject[]> {
       body: JSON.stringify({
         query: PROJECTS_QUERY,
       }),
-      next: { revalidate: 0 }, // Always fetch fresh in development
-      cache: 'no-store', // Prevent caching issues
+      next: { 
+        revalidate: process.env.NODE_ENV === 'production' ? 3600 : 0, // 1 hour in production, no cache in dev
+      },
+      cache: process.env.NODE_ENV === 'production' ? 'force-cache' : 'no-store',
     });
 
     if (!response.ok) {

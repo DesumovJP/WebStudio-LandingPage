@@ -21,21 +21,7 @@ const nextConfig: NextConfig = {
 
   // ✅ Image optimization
   images: {
-    // Development: дозволяємо localhost для локального Strapi
-    // Production: тільки production домени
-    domains: isDevelopment
-      ? [
-          'localhost',
-          '127.0.0.1',
-          'webstudio-landingpage-production.up.railway.app',
-          'webbie-tau.vercel.app',
-          'res.cloudinary.com',
-        ]
-      : [
-          'webstudio-landingpage-production.up.railway.app',
-          'webbie-tau.vercel.app',
-          'res.cloudinary.com',
-        ],
+    // Using remotePatterns instead of deprecated domains
     remotePatterns: [
       // Development: localhost для локального Strapi
       ...(isDevelopment
@@ -62,11 +48,17 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https' as const,
+        hostname: 'webbie-tau.vercel.app',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https' as const,
         hostname: 'res.cloudinary.com',
         pathname: '/**',
       },
     ],
-    formats: ['image/webp'], // ❌ прибрано 'image/avif' для стабільності
+    formats: ['image/webp'],
+    minimumCacheTTL: 60, // Cache images for 60 seconds
   },
 };
 

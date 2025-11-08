@@ -677,7 +677,7 @@ export default function Home() {
               </div>
               <div className="modal-right">
                 <div className="gallery-grid">
-                  {galleryImages.map((img, idx) => (
+                  {galleryImages.map((img: string, idx: number) => (
                     <div
                       key={idx}
                       className="gallery-item"
