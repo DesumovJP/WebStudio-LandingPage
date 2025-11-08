@@ -115,12 +115,12 @@ function richTextToPlainText(richText: string | any[] | undefined): string {
 }
 
 /**
- * GraphQL query to fetch projects
+ * GraphQL query to fetch projects with locale support
  * Using REST API structure for Strapi v4
  */
-const PROJECTS_QUERY = `
+const PROJECTS_QUERY = (locale: string = 'uk') => `
   query GetProjects {
-    projects {
+    projects(locale: "${locale}") {
       data {
         id
         documentId
@@ -133,6 +133,7 @@ const PROJECTS_QUERY = `
           done
           benefits
           outcome
+          locale
           gallery {
             data {
               attributes {
@@ -155,9 +156,10 @@ const PROJECTS_QUERY = `
 `;
 
 /**
- * Fetch projects from Strapi using GraphQL
+ * Fetch projects from Strapi using GraphQL with locale support
+ * @param locale - Locale code ('uk' or 'en')
  */
-export async function getProjects(): Promise<StrapiProject[]> {
+export async function getProjects(locale: string = 'uk'): Promise<StrapiProject[]> {
   try {
     if (!env.API_URL) {
       console.warn('⚠️ API_URL is not set, returning empty projects');
@@ -177,7 +179,7 @@ export async function getProjects(): Promise<StrapiProject[]> {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        query: PROJECTS_QUERY,
+        query: PROJECTS_QUERY(locale),
       }),
       next: { 
         revalidate: process.env.NODE_ENV === 'production' ? 3600 : 0, // 1 hour in production, no cache in dev

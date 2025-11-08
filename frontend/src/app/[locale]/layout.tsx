@@ -71,8 +71,8 @@ export default async function LocaleLayout({
   const locale = await getValidatedLocale(resolvedParams);
   const dict = await getDictionary(locale);
   
-  // Fetch projects from Strapi
-  const strapiProjects = await getProjects();
+  // Fetch projects from Strapi with locale support
+  const strapiProjects = await getProjects(locale);
   
   // Use only Strapi projects, never fallback to mock projects
   const mergedDict = {
