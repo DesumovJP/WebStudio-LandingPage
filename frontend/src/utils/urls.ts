@@ -17,6 +17,11 @@ export function getStrapiUrl(path: string): string {
     return fixStrapiUrl(path);
   }
   
+  // If path already starts with /uploads/, just prepend API_URL
+  if (path.startsWith('/uploads/')) {
+    return fixStrapiUrl(`${env.API_URL}${path}`);
+  }
+  
   // Remove leading slash if present
   const cleanPath = path.startsWith('/') ? path.slice(1) : path;
   
@@ -34,11 +39,17 @@ export function getImageUrl(path: string | undefined, fallback?: string): string
     return fixStrapiUrl(path);
   }
   
+  // If path starts with /uploads/, it's a Strapi upload, not a local asset
+  if (path.startsWith('/uploads/')) {
+    return getStrapiUrl(path);
+  }
+  
+  // Other paths starting with / are local public assets
   if (path.startsWith('/')) {
-    // local public asset - return as is
     return path;
   }
   
+  // Relative paths are treated as Strapi uploads
   return getStrapiUrl(path);
 }
 

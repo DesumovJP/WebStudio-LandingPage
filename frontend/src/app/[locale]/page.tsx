@@ -1,16 +1,35 @@
 "use client";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { Button, Paper, Box, Dialog, Accordion, AccordionSummary, AccordionDetails, IconButton } from "@mui/material";
+// Optimized MUI imports - tree-shaking friendly
+import Button from "@mui/material/Button";
+import Paper from "@mui/material/Paper";
+import Box from "@mui/material/Box";
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
-import Testimonials from "@/components/Testimonials";
 import Reveal from "@/components/Reveal";
+import DecorativeSpider from "@/components/DecorativeSpider";
 import { useState, useCallback, FormEvent } from "react";
 import React from "react";
 import { useDict } from "@/i18n/DictContext";
 import { getImageUrl } from "@/utils/urls";
+import dynamic from "next/dynamic";
 
-type Project = { title: string; sub: string; desc: string };
+// Lazy load heavy components
+const Dialog = dynamic(() => import("@mui/material").then(mod => ({ default: mod.Dialog })), { ssr: false });
+const Testimonials = dynamic(() => import("@/components/Testimonials"), { ssr: true });
+
+type Project = { 
+  id?: number;
+  title: string; 
+  sub: string; 
+  desc: string;
+  gallery?: string[];
+  mainImage?: string;
+};
 
 export default function Home() {
   const { dict } = useDict();
@@ -19,7 +38,6 @@ export default function Home() {
     done: string[]; benefits: string[]; outcome: string;
     metric?: string; stack?: string[];
   }>;
-  const petProjects = (dict?.petProjects ?? []) as Array<Project & { stack?: string[] }>;
   const processSteps = (dict?.process ?? []) as Array<{
     num: string; name: string; title: string; desc: string;
   }>;
@@ -28,21 +46,36 @@ export default function Home() {
   const [current, setCurrent] = useState<Project | null>(null);
   const [imageModalOpen, setImageModalOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const handleOpen = (p: Project) => { setCurrent(p); setOpen(true); setCurrentImageIndex(0); };
-  const handleClose = () => { setOpen(false); setCurrentImageIndex(0); };
+  const handleOpen = useCallback((p: Project) => { 
+    setCurrent(p); 
+    setOpen(true); 
+    setCurrentImageIndex(0); 
+  }, []);
   
-  // Generate placeholder images array for gallery (6 images per project)
-  // Using placeholder SVG instead of external service for better performance
-  const galleryImages = current ? Array(6).fill(null).map((_, i) => `https://res.cloudinary.com/deirtcyfx/image/upload/v1762340442/BCO_3fad0425_6f07_40a7_b899_ded8c4577134_f880591694.png`) : [];
+  const handleClose = useCallback(() => { 
+    setOpen(false); 
+    setCurrentImageIndex(0); 
+  }, []);
   
-  const handleImageClick = (index: number) => {
+  // Get gallery images from current project (from Strapi or fallback) - memoized
+  const galleryImages = React.useMemo(() => {
+    if (current && 'gallery' in current && Array.isArray((current as any).gallery) && (current as any).gallery.length > 0) {
+      return (current as any).gallery;
+    }
+    if (current) {
+      return Array(6).fill(null).map((_, i) => `https://res.cloudinary.com/deirtcyfx/image/upload/v1762340442/BCO_3fad0425_6f07_40a7_b899_ded8c4577134_f880591694.png`);
+    }
+    return [];
+  }, [current]);
+  
+  const handleImageClick = useCallback((index: number) => {
     setCurrentImageIndex(index);
     setImageModalOpen(true);
-  };
+  }, []);
   
-  const handleCloseImageModal = () => {
+  const handleCloseImageModal = useCallback(() => {
     setImageModalOpen(false);
-  };
+  }, []);
   
   const handlePrevImage = useCallback(() => {
     setCurrentImageIndex((prev) => (prev > 0 ? prev - 1 : galleryImages.length - 1));
@@ -64,10 +97,10 @@ export default function Home() {
       message: string;
     }>({ type: 'idle', message: '' });
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       const { name, value } = e.target;
       setFormData((prev) => ({ ...prev, [name]: value }));
-    };
+    }, []);
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault();
@@ -197,6 +230,13 @@ export default function Home() {
         <section className="section hero-section" id="hero">
           <div className="container z-1 hero-pad">
             <h1 className="heading-xl">{dict?.hero?.title ?? '...'}</h1>
+            {dict?.hero?.stats && (
+              <div className="hero-stats mt-2">
+                <span className="hero-stat-item">{dict.hero.stats.projects}</span>
+                <span className="hero-stat-item">{dict.hero.stats.rating}</span>
+                <span className="hero-stat-item">{dict.hero.stats.since}</span>
+              </div>
+            )}
             <p className="body-lg mt-3 w-72">{dict?.hero?.desc ?? ''}</p>
             <div className="flex row gap-3 mt-3 hero-services">
               {(dict?.hero?.services ?? []).map((s: string, idx: number) => (
@@ -216,17 +256,24 @@ export default function Home() {
         {/* Services */}
         <Reveal>
           <section className="section services-section" id="services">
+          <DecorativeSpider size={40} opacity={0.3} className="spider-middle-left" />
           <div className="container grid grid-3">
-            <div className="service-item pink">
-              <h2 className="heading-lg">{dict?.servicesBlock?.full?.title ?? 'Turnkey'}</h2>
-              <p className="body-lg">{dict?.servicesBlock?.full?.desc ?? ''}</p>
-            </div>
             <div className="service-item green">
-              <h2 className="heading-lg">{dict?.servicesBlock?.fast?.title ?? 'Fast start'}</h2>
+              <div className="service-item-title-wrapper">
+                <h2 className="heading-lg">{dict?.servicesBlock?.fast?.title ?? 'Fast start'}</h2>
+              </div>
               <p className="body-lg">{dict?.servicesBlock?.fast?.desc ?? ''}</p>
             </div>
+            <div className="service-item pink">
+              <div className="service-item-title-wrapper">
+                <h2 className="heading-lg">{dict?.servicesBlock?.full?.title ?? 'Turnkey'}</h2>
+              </div>
+              <p className="body-lg">{dict?.servicesBlock?.full?.desc ?? ''}</p>
+            </div>
             <div className="service-item yellow">
-              <h2 className="heading-lg">{dict?.servicesBlock?.scale?.title ?? 'Scale'}</h2>
+              <div className="service-item-title-wrapper">
+                <h2 className="heading-lg">{dict?.servicesBlock?.scale?.title ?? 'Scale'}</h2>
+              </div>
               <p className="body-lg">{dict?.servicesBlock?.scale?.desc ?? ''}</p>
             </div>
           </div>
@@ -239,10 +286,13 @@ export default function Home() {
             <div className="container">
               <h2 className="heading-lg">{dict?.sections?.lastProjects ?? '...'}</h2>
               <div className="grid grid-3 mt-3">
-                {projects.map((p, i) => (
-                  <Paper key={i} className="glass card project click" elevation={0} onClick={() => handleOpen(p)}>
+                {projects.map((p, i) => {
+                  // Main image is the first image from gallery (preview)
+                  const previewImage = (p as any).mainImage || (p as any).gallery?.[0] || 'https://res.cloudinary.com/deirtcyfx/image/upload/v1762340442/BCO_3fad0425_6f07_40a7_b899_ded8c4577134_f880591694.png';
+                  return (
+                  <Paper key={(p as any).documentId || i} className="glass card project click" elevation={0} onClick={() => handleOpen(p)}>
                     <div className="project-card">
-                      <img src="https://res.cloudinary.com/deirtcyfx/image/upload/v1762340442/BCO_3fad0425_6f07_40a7_b899_ded8c4577134_f880591694.png" alt={p.title} className="project-card-img" />
+                      <img src={previewImage} alt={p.title} className="project-card-img" loading="lazy" decoding="async" />
                     </div>
                     <div className="card-body">
                       <div className="card-title-row">
@@ -259,44 +309,17 @@ export default function Home() {
                       )}
                     </div>
                   </Paper>
-                ))}
+                  );
+                })}
               </div>
             </div>
           </section>
         </Reveal>
 
-        {/* Pet Projects */}
-        <Reveal>
-          <section className="section" id="pet">
-          <div className="container">
-            <h2 className="heading-md">{dict?.sections?.petProjects ?? '...'}</h2>
-            <div className="grid grid-3 mt-2">
-              {petProjects.map((p, i) => (
-                <Paper key={i} className="glass card project click" elevation={0} onClick={() => handleOpen(p)}>
-                  <div className="project-card">
-                    <img src="https://res.cloudinary.com/deirtcyfx/image/upload/v1762340442/BCO_3fad0425_6f07_40a7_b899_ded8c4577134_f880591694.png" alt={p.title} className="project-card-img" />
-                  </div>
-                  <div className="card-body">
-                    <div className="card-title">{p.title}</div>
-                    <div className="card-sub">{p.sub}</div>
-                    {p.stack && (
-                      <div className="project-stack mt-2">
-                        {p.stack.map((tech, idx) => (
-                          <span key={idx} className={`stack-tag stack-tag-${tech.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '').replace(/\//g, '-')}`}>{tech}</span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </Paper>
-              ))}
-            </div>
-          </div>
-        </section>
-        </Reveal>
-
         {/* Process */}
         <Reveal>
           <section className="section process-section" id="process">
+          <DecorativeSpider size={42} opacity={0.3} className="spider-top-right" />
           <div className="container z-1">
             <h2 className="heading-lg text-center">{dict?.sections?.howWeWork ?? '...'}</h2>
             <div className="mt-4">
@@ -327,9 +350,26 @@ export default function Home() {
 
         {/* Testimonials */}
         <Reveal>
-          <section className="section" id="testimonials">
+          <section className="section testimonials-section" id="testimonials">
+          <DecorativeSpider size={36} opacity={0.3} className="spider-center-left" />
           <div className="container">
             <Testimonials />
+            {dict?.sections?.testimonials?.stats && (
+              <div className="testimonials-stats mt-4">
+                <div className="testimonial-stat-item">
+                  <div className="testimonial-stat-value">{dict.sections.testimonials.stats.projects}</div>
+                  <div className="testimonial-stat-label">{dict.sections.testimonials.stats.projectsLabel}</div>
+                </div>
+                <div className="testimonial-stat-item">
+                  <div className="testimonial-stat-value">⭐ {dict.sections.testimonials.stats.rating}</div>
+                  <div className="testimonial-stat-label">{dict.sections.testimonials.stats.ratingLabel}</div>
+                </div>
+                <div className="testimonial-stat-item">
+                  <div className="testimonial-stat-value">{dict.sections.testimonials.stats.since}</div>
+                  <div className="testimonial-stat-label">{dict.sections.testimonials.stats.sinceLabel}</div>
+                </div>
+              </div>
+            )}
           </div>
         </section>
         </Reveal>
@@ -337,6 +377,7 @@ export default function Home() {
         {/* Pricing */}
         <Reveal>
           <section className="section pricing-section" id="pricing">
+          <DecorativeSpider size={38} opacity={0.28} className="spider-bottom-right" />
           <div className="container">
             <div className="pricing-header text-center">
               <h2 className="heading-lg pricing-title-main">{dict?.sections?.pricing?.title ?? ''}</h2>
@@ -351,6 +392,10 @@ export default function Home() {
                         <path d="M12 2l2.5 7.5 7.5.6-5.8 4.5 1.9 7.1-6.1-4-6.1 4 1.9-7.1-5.8-4.5 7.5-.6L12 2z" strokeLinecap="round" strokeLinejoin="round"/>
                       </svg>
                       {dict?.sections?.pricing?.popularBadge ?? 'Popular'}
+                    </span> : null}
+                    {i === 2 ? <span className="badge">
+                      <span className="badge-icon">🔥</span>
+                      {dict?.sections?.pricing?.recommendedBadge ?? 'Unlimited'}
                     </span> : null}
                     <div className="pricing-title-row">
                       <div className="pricing-name">
@@ -388,19 +433,43 @@ export default function Home() {
         {/* FAQ */}
         <Reveal>
           <section className="section" id="faq">
+          <DecorativeSpider size={36} opacity={0.3} className="spider-upper-right" />
           <div className="container">
             <div className="faq-header">
-              <svg className="faq-header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="10"/>
-                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
-                <line x1="12" y1="17" x2="12.01" y2="17"/>
+              <svg className="faq-header-icon" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <defs>
+                  <linearGradient id="faq-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#ff69b4" />
+                    <stop offset="50%" stopColor="#90ee90" />
+                    <stop offset="100%" stopColor="#87ceeb" />
+                  </linearGradient>
+                </defs>
+                <circle cx="12" cy="12" r="10" stroke="url(#faq-gradient)"/>
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" stroke="url(#faq-gradient)"/>
+                <circle cx="12" cy="17" r="1.5" fill="url(#faq-gradient)"/>
               </svg>
               <h2 className="heading-lg text-center">{dict?.sections?.faq?.title ?? ''}</h2>
               <p className="body-lg text-center faq-subtitle">{dict?.sections?.faq?.subtitle ?? ''}</p>
             </div>
             <div className="faq-grid mt-4">
               {(dict?.faq ?? []).map((item: any, i: number) => (
-                <Accordion key={i} className="faq-item" elevation={0} sx={{ backgroundColor: 'transparent', border: 'none', '&:before': { display: 'none' } }}>
+                <Accordion 
+                  key={i} 
+                  className="faq-item" 
+                  elevation={0} 
+                  sx={{ 
+                    backgroundColor: 'transparent', 
+                    border: 'none', 
+                    '&:before': { display: 'none' },
+                    '& .MuiCollapse-root': {
+                      transition: 'height 250ms cubic-bezier(0.4, 0, 0.2, 1) !important',
+                    }
+                  }}
+                  TransitionProps={{
+                    timeout: 250,
+                    easing: { enter: 'cubic-bezier(0.4, 0, 0.2, 1)', exit: 'cubic-bezier(0.4, 0, 0.2, 1)' }
+                  }}
+                >
                   <AccordionSummary expandIcon={
                     <svg className="faq-expand-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M6 9l6 6 6-6"/>
@@ -409,7 +478,7 @@ export default function Home() {
                     <svg className="faq-question-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <circle cx="12" cy="12" r="10"/>
                       <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
-                      <line x1="12" y1="17" x2="12.01" y2="17"/>
+                      <circle cx="12" cy="17" r="1.5" fill="currentColor"/>
                     </svg>
                     <h3 className="faq-q">{item.q}</h3>
                   </AccordionSummary>
@@ -428,20 +497,32 @@ export default function Home() {
         {/* Contact */}
         <Reveal>
           <section className="section" id="contact">
+          <DecorativeSpider size={44} opacity={0.3} className="spider-lower-left" />
           <div className="container">
             <h2 className="heading-lg text-center">{dict?.sections?.contact?.title ?? ''}</h2>
             <p className="body-lg mt-2 text-center">{dict?.sections?.contact?.subtitle ?? ''}</p>
             <div className="contact-grid mt-3">
-              <div>
+              <div className="contact-image-section">
                 <div className="contact-image-wrap">
-                  <img src={getImageUrl('https://res.cloudinary.com/deirtcyfx/image/upload/v1762339091/cat_computer_5b22250514.gif')} alt="cat" className="contact-hero-img" />
-                  <div className="contact-overlay">
-                    <h3 className="heading-md">{dict?.sections?.contact?.now ?? ''}</h3>
-                  </div>
+                  <img src={getImageUrl('http://localhost:1337/uploads/BCO_6e6690a6_b492_4e83_85b4_c9e1af011452_e3c5f20d75.png')} alt="Our team" className="contact-hero-img" loading="lazy" decoding="async" />
+                </div>
+                <div className="contact-marketing-content">
+                  {dict?.sections?.contact?.marketingText && (
+                    <p className="contact-marketing-text">{dict.sections.contact.marketingText}</p>
+                  )}
+                  {dict?.sections?.contact?.marketingTextExtended && (
+                    <p className="contact-marketing-text-extended">{dict.sections.contact.marketingTextExtended}</p>
+                  )}
                 </div>
               </div>
             <Paper className="paper-clear contact-form-wrap" elevation={0}>
               <div className="modal-content pad-0">
+                {dict?.sections?.contact?.responseTime && (
+                  <h3 className="contact-form-title">
+                    <span className="contact-indicator-icon">⚡</span>
+                    <span className="contact-indicator-text">{dict.sections.contact.responseTime}</span>
+                  </h3>
+                )}
                 <form className="form" onSubmit={handleSubmit}>
                   <div className="form-grid">
                     <input
@@ -488,15 +569,17 @@ export default function Home() {
                         {formStatus.message}
                       </div>
                     )}
-                    <div className="full justify-center">
-                      <Button
-                        type="submit"
-                        variant="contained"
-                        className="btn-lg"
-                        disabled={formStatus.type === 'loading'}
-                      >
-                        {formStatus.type === 'loading' ? (dict?.contact?.form?.sending ?? 'Sending...') : (dict?.contact?.form?.send ?? 'Send')}
-                      </Button>
+                    <div className="full contact-form-footer">
+                      <div className="contact-form-button">
+                        <Button
+                          type="submit"
+                          variant="contained"
+                          className="btn-lg contact-submit-btn"
+                          disabled={formStatus.type === 'loading'}
+                        >
+                          {formStatus.type === 'loading' ? (dict?.contact?.form?.sending ?? 'Sending...') : (dict?.contact?.form?.send ?? 'Send')}
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </form>
@@ -508,6 +591,8 @@ export default function Home() {
                 src={getImageUrl('https://res.cloudinary.com/deirtcyfx/image/upload/v1762338789/pawukpng_42af27088a.png')}
                 alt="Webbie logo"
                 className="contact-logo"
+                loading="lazy"
+                decoding="async"
               />
               <p className="body-md contact-telegram-text">{dict?.sections?.contact?.telegram ?? ''}</p>
               <Button 
@@ -532,19 +617,26 @@ export default function Home() {
               aria-label="close"
               sx={{ 
                 position: 'absolute', 
-                top: '2rem', 
-                right: '2rem', 
+                top: '2.5rem', 
+                right: '2.5rem', 
                 zIndex: 10,
-                background: 'rgba(255, 255, 255, 0.9)',
-                backdropFilter: 'blur(0.8rem)',
-                width: '3.5rem',
-                height: '3.5rem',
+                background: 'rgba(255, 255, 255, 0.85)',
+                backdropFilter: 'blur(1.2rem) saturate(180%)',
+                WebkitBackdropFilter: 'blur(1.2rem) saturate(180%)',
+                width: '3.8rem',
+                height: '3.8rem',
                 fontSize: '1.75rem',
-                '&:hover': { background: 'rgba(255, 255, 255, 1)', transform: 'scale(1.1)' },
-                transition: 'all 200ms ease'
+                border: '0.1rem solid rgba(255, 255, 255, 0.3)',
+                boxShadow: '0 0.2rem 0.8rem rgba(0, 0, 0, 0.08), inset 0 0.1rem 0.2rem rgba(255, 255, 255, 0.6)',
+                '&:hover': { 
+                  background: 'rgba(255, 255, 255, 0.95)', 
+                  transform: 'scale(1.08)',
+                  boxShadow: '0 0.4rem 1.2rem rgba(0, 0, 0, 0.12), inset 0 0.1rem 0.2rem rgba(255, 255, 255, 0.7)',
+                },
+                transition: 'all 250ms cubic-bezier(0.4, 0, 0.2, 1)'
               }}
             >
-              <CloseIcon sx={{ fontSize: '1.75rem' }} />
+              <CloseIcon sx={{ fontSize: '1.8rem', color: 'rgba(0, 0, 0, 0.7)' }} />
             </IconButton>
             <div className="modal-title">{current?.title}</div>
             <div className="modal-desc">{current?.desc}</div>
@@ -591,7 +683,7 @@ export default function Home() {
                       className="gallery-item"
                       onClick={() => handleImageClick(idx)}
                     >
-                      <img src={img} alt={`${current?.title} - Image ${idx + 1}`} />
+                      <img src={img} alt={`${current?.title} - Image ${idx + 1}`} loading="lazy" decoding="async" />
                     </div>
                   ))}
                 </div>
@@ -636,6 +728,8 @@ export default function Home() {
                   src={galleryImages[currentImageIndex]} 
                   alt={`${current?.title} - Image ${currentImageIndex + 1}`}
                   className="image-modal-img"
+                  loading="eager"
+                  decoding="sync"
                 />
                 <button className="image-modal-nav image-modal-nav-prev" onClick={handlePrevImage} aria-label="Previous image">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M15 18l-6-6 6-6"/></svg>
@@ -645,12 +739,9 @@ export default function Home() {
                 </button>
                 <div className="image-modal-counter">{currentImageIndex + 1} / {galleryImages.length}</div>
                 <div className="image-modal-hint">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="rotate-icon">
                     <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
                     <line x1="12" y1="18" x2="12.01" y2="18"/>
-                  </svg>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="rotate-icon">
-                    <path d="M21.5 2v6h-6M2.5 22v-6h6M22 12a10 10 0 0 0-10-10M2 12a10 10 0 0 0 10 10"/>
                   </svg>
                 </div>
               </>
