@@ -1,14 +1,9 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
-import '../globals.css';
-import Providers from '../providers';
 import { locales, defaultLocale, type Locale } from '@/i18n/config';
 import { getDictionary } from '@/i18n/getDictionary';
 import { DictProvider } from '@/i18n/DictContext';
 import { env } from '@/config/env';
-
-const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] });
-const geistMono = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin'] });
+import { getProjects } from '@/utils/getProjects';
 
 async function getValidatedLocale(params: Promise<{ locale: string }> | { locale: string }): Promise<Locale> {
   const resolvedParams = params instanceof Promise ? await params : params;
@@ -28,6 +23,8 @@ export async function generateMetadata({
   
   const siteUrl = env.SITE_URL;
   const iconUrl = 'https://res.cloudinary.com/deirtcyfx/image/upload/v1762338789/pawukpng_42af27088a.png';
+  
+  const logoUrl = 'https://res.cloudinary.com/deirtcyfx/image/upload/v1762338789/pawukpng_42af27088a.png';
   
   return {
     title: meta.title ?? 'Webbie — Web & App Development',
@@ -73,15 +70,18 @@ export default async function LocaleLayout({
   const resolvedParams = params instanceof Promise ? await params : params;
   const locale = await getValidatedLocale(resolvedParams);
   const dict = await getDictionary(locale);
+  
+  // Fetch projects from Strapi
+  const strapiProjects = await getProjects();
+  
+  // Merge Strapi projects with dict (Strapi projects take priority)
+  const mergedDict = {
+    ...dict,
+    projects: strapiProjects.length > 0 ? strapiProjects : dict.projects,
+  };
 
   return (
-    <html lang={locale}>
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <Providers>
-          <DictProvider value={{ locale, dict }}>{children}</DictProvider>
-        </Providers>
-      </body>
-    </html>
+    <DictProvider value={{ locale, dict: mergedDict }}>{children}</DictProvider>
   );
 }
 
