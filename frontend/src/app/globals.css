@@ -1002,7 +1002,6 @@ a {
   display: flex;
   flex-direction: column;
   flex: 1;
-  min-height: 0;
   /* Ensure minimum height to compensate for short content */
   min-height: 28vh;
 }
