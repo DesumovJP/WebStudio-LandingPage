@@ -47,6 +47,19 @@ export default function Home() {
   const [imageModalOpen, setImageModalOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [activePricingCard, setActivePricingCard] = useState<number | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+  
+  // Detect mobile device for accordion animation optimization
+  React.useEffect(() => {
+    const checkMobile = () => {
+      const mobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || 
+                     (typeof window !== 'undefined' && window.innerWidth < 768);
+      setIsMobile(mobile);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
   const handleOpen = useCallback((p: Project) => { 
     setCurrent(p); 
     setOpen(true); 
@@ -481,13 +494,13 @@ export default function Home() {
                     '& .MuiCollapse-root': {
                       transition: 'height 250ms cubic-bezier(0.4, 0, 0.2, 1) !important',
                       '@media (hover: none) and (pointer: coarse)': {
-                        // Faster animation on mobile
-                        transition: 'height 150ms cubic-bezier(0.4, 0, 0.2, 1) !important',
+                        // Disable animation on mobile for better performance
+                        transition: 'none !important',
                       }
                     }
                   }}
                   TransitionProps={{
-                    timeout: 150, // Faster timeout for better mobile performance
+                    timeout: isMobile ? 0 : 150, // Instant on mobile, smooth on desktop
                     easing: { enter: 'cubic-bezier(0.4, 0, 0.2, 1)', exit: 'cubic-bezier(0.4, 0, 0.2, 1)' }
                   }}
                 >
