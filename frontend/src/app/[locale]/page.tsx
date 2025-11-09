@@ -46,6 +46,7 @@ export default function Home() {
   const [current, setCurrent] = useState<Project | null>(null);
   const [imageModalOpen, setImageModalOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [activePricingCard, setActivePricingCard] = useState<number | null>(null);
   const handleOpen = useCallback((p: Project) => { 
     setCurrent(p); 
     setOpen(true); 
@@ -293,16 +294,16 @@ export default function Home() {
                   <Paper key={(p as any).documentId || i} className="glass card project click" elevation={0} onClick={() => handleOpen(p)}>
                     <div className="project-card">
                       <img src={previewImage} alt={p.title} className="project-card-img" loading="lazy" decoding="async" />
+                      {p.metric && (
+                        <div className="project-metric-overlay">
+                          <span className="project-metric">{p.metric}</span>
+                        </div>
+                      )}
                     </div>
                     <div className="card-body">
                       <div className="card-title-row">
                         <div className="card-title">{p.title}</div>
                       </div>
-                      {p.metric && (
-                        <div className="project-metric-row">
-                          <span className="project-metric">{p.metric}</span>
-                        </div>
-                      )}
                       <div className="card-sub">{p.sub}</div>
                       {p.stack && (
                         <div className="project-stack mt-2">
@@ -389,7 +390,19 @@ export default function Home() {
             </div>
             <div className="grid grid-3 mt-4 pricing-grid">
               {(dict?.pricing ?? []).map((p: any, i: number) => (
-                <Paper key={i} className={`glass card pricing-card pricing-card-${i === 0 ? 'blue' : i === 1 ? 'green' : 'gold'}`} elevation={0}>
+                <Paper 
+                  key={i} 
+                  className={`glass card pricing-card pricing-card-${i === 0 ? 'blue' : i === 1 ? 'green' : 'gold'} ${activePricingCard === i ? 'pricing-card-active' : ''}`}
+                  elevation={0}
+                  onClick={() => {
+                    // Toggle behavior on mobile: tap to activate, tap another to switch
+                    if (activePricingCard === i) {
+                      setActivePricingCard(null);
+                    } else {
+                      setActivePricingCard(i);
+                    }
+                  }}
+                >
                   <div className="card-body">
                     {i === 1 ? <span className="badge">
                       <svg className="badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
