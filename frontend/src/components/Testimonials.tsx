@@ -22,20 +22,12 @@ const Testimonials = React.memo(function Testimonials() {
   const lastUpdateRef = React.useRef<number>(0);
   const [isMobile, setIsMobile] = React.useState(false);
 
-  // Detect mobile device - disable timer animation on mobile
+  // Detect mobile device - hide progress bar but keep auto-rotation
   React.useEffect(() => {
     const checkMobile = () => {
       const mobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || 
                      (typeof window !== 'undefined' && window.innerWidth < 768);
       setIsMobile(mobile);
-      if (mobile) {
-        // Disable animation on mobile
-        setIsAnimating(false);
-        if (animationFrameRef.current !== null) {
-          cancelAnimationFrame(animationFrameRef.current);
-          animationFrameRef.current = null;
-        }
-      }
     };
     checkMobile();
     window.addEventListener('resize', checkMobile);
@@ -57,12 +49,13 @@ const Testimonials = React.memo(function Testimonials() {
     }, 300); // Small delay for smooth transition
   }, [testimonials.length]);
 
-  // Optimized animation using requestAnimationFrame - disabled on mobile
+  // Optimized animation using requestAnimationFrame - progress bar hidden on mobile but auto-rotation works
   React.useEffect(() => {
-    // Don't start animation on mobile devices
-    if (isMobile || testimonials.length === 0 || !isAnimating) return;
+    if (testimonials.length === 0 || !isAnimating) return;
     
     const duration = 5000; // 5 seconds
+    // Throttle updates on mobile (update every 2 frames) but still rotate testimonials
+    const throttleInterval = isMobile ? 2 : 1;
     let frameCount = 0;
     
     const animate = (timestamp: number) => {
@@ -74,10 +67,13 @@ const Testimonials = React.memo(function Testimonials() {
       const elapsed = timestamp - startTimeRef.current;
       const newProgress = Math.min((elapsed / duration) * 100, 100);
       
-      // Update every frame for smooth animation
+      // Throttle updates on mobile for better performance, but still track progress
       frameCount++;
-      if (frameCount % 1 === 0 || newProgress >= 100) {
-        setProgress(newProgress);
+      if (frameCount % throttleInterval === 0 || newProgress >= 100) {
+        // Only update progress state on desktop (for progress bar)
+        if (!isMobile) {
+          setProgress(newProgress);
+        }
         lastUpdateRef.current = timestamp;
       }
       
@@ -98,14 +94,12 @@ const Testimonials = React.memo(function Testimonials() {
     };
   }, [isMobile, isAnimating, nextTestimonial, testimonials.length]);
 
-  // Reset progress when index changes - only on desktop
+  // Reset progress when index changes
   React.useEffect(() => {
-    if (!isMobile) {
-      setProgress(0);
-      setIsAnimating(true);
-      startTimeRef.current = null;
-    }
-  }, [index, isMobile]);
+    setProgress(0);
+    setIsAnimating(true);
+    startTimeRef.current = null;
+  }, [index]);
 
   if (testimonials.length === 0) return null;
 
