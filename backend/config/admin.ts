@@ -17,4 +17,12 @@ export default ({ env }) => ({
     nps: env.bool('FLAG_NPS', true),
     promoteEE: env.bool('FLAG_PROMOTE_EE', true),
   },
+  // Allow Railway host for Vite dev server
+  server: {
+    allowedHosts: [
+      'webstudio-landingpage-production.up.railway.app',
+      'localhost',
+      '127.0.0.1',
+    ],
+  },
 });
