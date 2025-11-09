@@ -1036,18 +1036,21 @@ a {
 }
 
 .project:nth-child(3n+1) .project-metric {
-  background: linear-gradient(135deg, rgba(255,105,180,0.2), rgba(255,182,193,0.15));
+  background: linear-gradient(135deg, rgba(255,105,180,0.95), rgba(255,182,193,0.9));
   color: rgba(255,105,180,1);
+  border-color: rgba(255,105,180,0.3);
 }
 
 .project:nth-child(3n+2) .project-metric {
-  background: linear-gradient(135deg, rgba(144,238,144,0.2), rgba(152,251,152,0.15));
+  background: linear-gradient(135deg, rgba(144,238,144,0.95), rgba(152,251,152,0.9));
   color: rgba(50,205,50,1);
+  border-color: rgba(50,205,50,0.3);
 }
 
 .project:nth-child(3n+3) .project-metric {
-  background: linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,255,0,0.15));
+  background: linear-gradient(135deg, rgba(255,215,0,0.95), rgba(255,255,0,0.9));
   color: rgba(255,165,0,1);
+  border-color: rgba(255,165,0,0.3);
 }
 .card-sub { 
   color: var(--muted); 
