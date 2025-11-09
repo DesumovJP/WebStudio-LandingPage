@@ -21,37 +21,25 @@ export type StrapiProject = {
 
 type GraphQLResponse = {
   data?: {
-    projects: {
-      data: Array<{
-        id: string;
-        documentId: string;
-        attributes: {
-          title: string;
-          subtitle?: string;
-          description?: string | any[]; // Can be string (HTML) or array (Blocks)
-          metric?: string;
-          stack?: string[] | null;
-          done?: string[] | null;
-          benefits?: string[] | null;
-          outcome?: string;
-          gallery?: {
-            data: Array<{
-              attributes: {
-                url: string;
-                alternativeText?: string;
-              };
-            }>;
-          };
-          mainImage?: {
-            data: {
-              attributes: {
-                url: string;
-              };
-            };
-          };
-        };
+    projects: Array<{
+      documentId: string;
+      title: string;
+      subtitle?: string;
+      description?: string | any[]; // Can be string (HTML) or array (Blocks)
+      metric?: string;
+      stack?: string[] | null;
+      done?: string[] | null;
+      benefits?: string[] | null;
+      outcome?: string;
+      locale?: string;
+      gallery?: Array<{
+        url: string;
+        alternativeText?: string;
       }>;
-    };
+      mainImage?: {
+        url: string;
+      };
+    }>;
   };
   errors?: Array<{
     message: string;
@@ -86,8 +74,12 @@ function richTextToPlainText(richText: string | any[] | undefined): string {
         if (block.type === 'paragraph' && block.children) {
           return block.children
             .map((child: any) => {
-              // Handle both text property and nested text
+              // Handle GraphQL Blocks structure: { type: "text", text: "..." }
               let text = child.text || child.children?.[0]?.text || '';
+              // Skip if child.type is not "text" (might be formatting nodes)
+              if (child.type && child.type !== 'text') {
+                return '';
+              }
               // If text contains HTML (like "<p>...</p>"), extract and clean it
               if (typeof text === 'string' && text.includes('<')) {
                 text = text
@@ -116,40 +108,27 @@ function richTextToPlainText(richText: string | any[] | undefined): string {
 
 /**
  * GraphQL query to fetch projects with locale support
- * Using REST API structure for Strapi v4
+ * Strapi GraphQL structure - uses documentId, not id/data wrapper
  */
 const PROJECTS_QUERY = (locale: string = 'uk') => `
   query GetProjects {
     projects(locale: "${locale}") {
-      data {
-        id
-        documentId
-        attributes {
-          title
-          subtitle
-          description
-          metric
-          stack
-          done
-          benefits
-          outcome
-          locale
-          gallery {
-            data {
-              attributes {
-                url
-                alternativeText
-              }
-            }
-          }
-          mainImage {
-            data {
-              attributes {
-                url
-              }
-            }
-          }
-        }
+      documentId
+      title
+      subtitle
+      description
+      metric
+      stack
+      done
+      benefits
+      outcome
+      locale
+      gallery {
+        url
+        alternativeText
+      }
+      mainImage {
+        url
       }
     }
   }
@@ -170,6 +149,7 @@ export async function getProjects(locale: string = 'uk'): Promise<StrapiProject[
     
     // Log in both dev and production for debugging
     console.log('🔍 Fetching projects from GraphQL:', graphqlUrl);
+    console.log('🔍 Locale requested:', locale);
     console.log('🔍 API_URL:', env.API_URL);
     console.log('🔍 NODE_ENV:', process.env.NODE_ENV);
 
@@ -182,9 +162,10 @@ export async function getProjects(locale: string = 'uk'): Promise<StrapiProject[
         query: PROJECTS_QUERY(locale),
       }),
       next: { 
-        revalidate: process.env.NODE_ENV === 'production' ? 3600 : 0, // 1 hour in production, no cache in dev
+        // Disable cache to always get fresh data with correct locale
+        revalidate: 0, // Always revalidate to get correct locale
       },
-      cache: process.env.NODE_ENV === 'production' ? 'force-cache' : 'no-store',
+      cache: 'no-store', // Always fetch fresh data
     });
 
     if (!response.ok) {
@@ -217,38 +198,59 @@ export async function getProjects(locale: string = 'uk'): Promise<StrapiProject[
       return [];
     }
 
-    const projectsData = result.data?.projects?.data || [];
+    const projectsData = result.data?.projects || [];
 
-    if (process.env.NODE_ENV === 'development') {
-      console.log('✅ Projects fetched:', projectsData.length, 'items');
+    // Log in both dev and production for debugging
+    console.log('✅ Projects fetched:', projectsData.length, 'items for locale:', locale);
+    if (projectsData.length > 0) {
+      console.log('🔍 First project locale:', projectsData[0]?.locale);
+      console.log('🔍 First project title:', projectsData[0]?.title);
+      console.log('🔍 All projects data:', JSON.stringify(projectsData, null, 2));
+    } else {
+      console.warn('⚠️ No projects returned from GraphQL for locale:', locale);
+      console.warn('⚠️ GraphQL response:', JSON.stringify(result, null, 2));
     }
 
     if (projectsData.length === 0) {
-      if (process.env.NODE_ENV === 'development') {
-        console.warn('⚠️ No projects found in Strapi. Make sure:');
-        console.warn('  1. Project is created in Strapi');
-        console.warn('  2. Project is published (not draft)');
-        console.warn('  3. GraphQL permissions are set for Public role');
-      }
+      // Log in both dev and production
+      console.warn('⚠️ No projects found in Strapi. Make sure:');
+      console.warn('  1. Project is created in Strapi');
+      console.warn('  2. Project is published (not draft)');
+      console.warn('  3. GraphQL permissions are set for Public role');
+      console.warn('  4. Project has the correct locale:', locale);
+      console.warn('  5. Check Strapi Admin → Content Manager → Project → Check locale and publication status');
       // In production, return empty array instead of fallback to mock projects
       return [];
     }
 
-    return projectsData.map((item) => {
-      const attributes = item.attributes;
-      if (process.env.NODE_ENV === 'development') {
-        console.log('🔍 Processing project:', attributes.title, {
-          hasGallery: !!attributes.gallery?.data && attributes.gallery.data.length > 0,
-          hasDescription: !!attributes.description,
-          descriptionType: Array.isArray(attributes.description) ? 'array' : typeof attributes.description,
-        });
-      }
+    return projectsData
+      .filter((item) => {
+        // Filter by locale to ensure we only get projects with the correct locale
+        const itemLocale = item.locale;
+        if (itemLocale !== locale) {
+          if (process.env.NODE_ENV === 'development') {
+            console.warn(`⚠️ Project "${item.title}" has locale "${itemLocale}" but requested "${locale}" - filtering out`);
+          }
+          return false;
+        }
+        return true;
+      })
+      .map((item) => {
+        if (process.env.NODE_ENV === 'development') {
+          console.log('🔍 Processing project:', item.title, {
+            locale: item.locale,
+            requestedLocale: locale,
+            hasGallery: !!item.gallery && Array.isArray(item.gallery) && item.gallery.length > 0,
+            hasDescription: !!item.description,
+            descriptionType: Array.isArray(item.description) ? 'array' : typeof item.description,
+          });
+        }
 
       // Get gallery images
       const galleryImages: string[] = [];
-      if (attributes.gallery?.data && Array.isArray(attributes.gallery.data)) {
-        attributes.gallery.data.forEach((img: any) => {
-          const url = img.attributes?.url || '';
+      if (item.gallery && Array.isArray(item.gallery)) {
+        item.gallery.forEach((img: any) => {
+          const url = img?.url || '';
           if (url) {
             const fullUrl = getImageUrl(url);
             if (process.env.NODE_ENV === 'development') {
@@ -260,21 +262,21 @@ export async function getProjects(locale: string = 'uk'): Promise<StrapiProject[
       }
 
       // Main image from mainImage field or first image from gallery
-      const mainImageUrl = attributes.mainImage?.data?.attributes?.url;
+      const mainImageUrl = item.mainImage?.url;
       const mainImage = mainImageUrl 
         ? getImageUrl(mainImageUrl) 
         : (galleryImages[0] || getImageUrl(undefined));
 
       const processedProject = {
-        documentId: item.documentId || item.id,
-        title: attributes.title || '',
-        sub: attributes.subtitle || '',
-        desc: richTextToPlainText(attributes.description) || '',
-        metric: attributes.metric || undefined,
-        stack: Array.isArray(attributes.stack) ? attributes.stack : undefined,
-        done: Array.isArray(attributes.done) ? attributes.done : [],
-        benefits: Array.isArray(attributes.benefits) ? attributes.benefits : [],
-        outcome: attributes.outcome || '',
+        documentId: item.documentId || '',
+        title: item.title || '',
+        sub: item.subtitle || '',
+        desc: richTextToPlainText(item.description) || '',
+        metric: item.metric || undefined,
+        stack: Array.isArray(item.stack) ? item.stack : undefined,
+        done: Array.isArray(item.done) ? item.done : [],
+        benefits: Array.isArray(item.benefits) ? item.benefits : [],
+        outcome: item.outcome || '',
         gallery: galleryImages.length > 0 ? galleryImages : [mainImage], // Fallback to main image if no gallery
         mainImage,
       };
