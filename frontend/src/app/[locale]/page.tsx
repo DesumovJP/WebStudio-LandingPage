@@ -297,8 +297,12 @@ export default function Home() {
                     <div className="card-body">
                       <div className="card-title-row">
                         <div className="card-title">{p.title}</div>
-                        {p.metric && <span className="project-metric">{p.metric}</span>}
                       </div>
+                      {p.metric && (
+                        <div className="project-metric-row">
+                          <span className="project-metric">{p.metric}</span>
+                        </div>
+                      )}
                       <div className="card-sub">{p.sub}</div>
                       {p.stack && (
                         <div className="project-stack mt-2">

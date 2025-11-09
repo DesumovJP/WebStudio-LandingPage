@@ -1006,10 +1006,17 @@ p, span, h1, h2, h3, h4, h5, h6, li, td, th, label,
 .card-title-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 1.5vh; margin-bottom: 0.8vh; }
 /* Project card title row - improved spacing */
 .project .card-title-row {
-  margin-bottom: 1.2vh;
-  align-items: center;
+  margin-bottom: 0.5vh;
+  align-items: flex-start;
 }
 .card-title-row .card-title { flex: 1; margin-bottom: 0; }
+/* Project metric row - separate block below title, aligned right */
+.project-metric-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.8vh;
+  margin-top: 0.3vh;
+}
 .project-metric { 
   font-size: clamp(0.85rem, 2vw, 0.95rem); 
   font-weight: 700; 
