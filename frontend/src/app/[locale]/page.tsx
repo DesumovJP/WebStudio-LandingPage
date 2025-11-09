@@ -463,10 +463,14 @@ export default function Home() {
                     '&:before': { display: 'none' },
                     '& .MuiCollapse-root': {
                       transition: 'height 250ms cubic-bezier(0.4, 0, 0.2, 1) !important',
+                      '@media (hover: none) and (pointer: coarse)': {
+                        // Faster animation on mobile
+                        transition: 'height 150ms cubic-bezier(0.4, 0, 0.2, 1) !important',
+                      }
                     }
                   }}
                   TransitionProps={{
-                    timeout: 250,
+                    timeout: 150, // Faster timeout for better mobile performance
                     easing: { enter: 'cubic-bezier(0.4, 0, 0.2, 1)', exit: 'cubic-bezier(0.4, 0, 0.2, 1)' }
                   }}
                 >
