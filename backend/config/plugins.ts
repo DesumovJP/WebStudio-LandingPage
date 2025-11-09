@@ -22,7 +22,7 @@ export default ({ env }) => ({
       config: {
         endpoint: '/graphql',
         shadowCRUD: true,
-        playgroundAlways: false,
+        playgroundAlways: true, // Enable playground in production for debugging
         depthLimit: 7,
         amountLimit: 100,
         apolloServer: {
