@@ -273,7 +273,19 @@ p, span, h1, h2, h3, h4, h5, h6, li, td, th, label,
 .lang-btn { background: transparent; border: none; padding: 0.6vh 1.2vh; border-radius: 0.6rem; cursor: pointer; color: var(--muted); font-weight: 600; letter-spacing: 0.02em; display: inline-flex; align-items: center; gap: 0.4vh; transition: all 0.2s ease; }
 .lang-btn:hover { background: rgba(255,255,255,0.4); color: var(--text); }
 .lang-btn.active { color: var(--text); background: rgba(255,255,255,0.7); border: 0.08rem solid rgba(0,0,0,0.08); }
-.lang-flag { font-size: 1.1em; line-height: 1; }
+.lang-flag { 
+  font-size: 1.1em; 
+  line-height: 1; 
+  display: inline-block;
+  /* Improve emoji rendering on Windows */
+  font-family: 'Segoe UI Emoji', 'Segoe UI Symbol', 'Apple Color Emoji', 'Noto Color Emoji', 'EmojiOne Color', 'Android Emoji', sans-serif;
+  /* Fallback for Windows - use smaller font for text fallback */
+  font-variant-emoji: emoji;
+  /* Ensure proper rendering */
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 .lang-text { font-size: 0.9em; }
 .lang-sep { color: var(--muted); opacity: 0.4; padding: 0 0.3vh; font-weight: 300; }
 .drawer-lang { margin-top: 2vh; display: flex; align-items: center; gap: 0.6vh; }
@@ -316,10 +328,8 @@ p, span, h1, h2, h3, h4, h5, h6, li, td, th, label,
   width: 100vw;
   height: 100vh;
   height: 100dvh; /* Dynamic viewport height for mobile */
-  background: rgba(0, 0, 0, 0.4);
-  /* Conditional backdrop-filter for performance */
-  backdrop-filter: blur(0.8rem);
-  -webkit-backdrop-filter: blur(0.8rem);
+  background: rgba(0, 0, 0, 0.5);
+  /* No blur on mobile for better performance - only darkening */
   z-index: 1300;
   opacity: 0;
   animation: fadeIn 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards;
@@ -335,10 +345,12 @@ p, span, h1, h2, h3, h4, h5, h6, li, td, th, label,
   contain: layout style paint;
 }
 
-/* Fallback for devices that don't support backdrop-filter */
-@supports not (backdrop-filter: blur(1px)) {
+/* Add blur only on desktop (non-touch devices) */
+@media (hover: hover) and (pointer: fine) {
   .mobile-menu-overlay {
-    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(0.8rem);
+    -webkit-backdrop-filter: blur(0.8rem);
+    background: rgba(0, 0, 0, 0.4);
   }
 }
 
@@ -1438,6 +1450,43 @@ p, span, h1, h2, h3, h4, h5, h6, li, td, th, label,
   .pricing-card:hover::after { filter: blur(7vh) saturate(170%); }
 }
 
+/* Touch support for mobile - active state instead of hover */
+@media (hover: none) and (pointer: coarse) {
+  .pricing-card:active {
+    transform: translateY(-0.4vh);
+  }
+  .pricing-card:active::after {
+    filter: blur(7vh) saturate(170%);
+  }
+  .pricing-card-blue:active::after {
+    background: radial-gradient(ellipse 100% 80% at 50% 50%, rgba(25, 118, 210, 0.26), rgba(66, 165, 245, 0.16), rgba(100, 181, 246, 0.08), transparent 75%);
+  }
+  .pricing-card-green:active::after {
+    background: radial-gradient(ellipse 100% 80% at 50% 50%, rgba(46, 125, 50, 0.26), rgba(76, 175, 80, 0.16), rgba(102, 187, 106, 0.08), transparent 75%);
+  }
+  .pricing-card-gold:active::after {
+    background: radial-gradient(ellipse 100% 80% at 50% 50%, rgba(184, 134, 11, 0.26), rgba(212, 175, 55, 0.16), rgba(255, 215, 0, 0.08), transparent 75%);
+  }
+  .pricing-card-blue:active {
+    box-shadow: 
+      0 0.6rem 1.8rem rgba(25, 118, 210, 0.3),
+      0 1.2rem 3.6rem rgba(25, 118, 210, 0.2),
+      0 0.3rem 0.8rem rgba(25, 118, 210, 0.25);
+  }
+  .pricing-card-green:active {
+    box-shadow: 
+      0 0.6rem 1.8rem rgba(46, 125, 50, 0.3),
+      0 1.2rem 3.6rem rgba(46, 125, 50, 0.2),
+      0 0.3rem 0.8rem rgba(46, 125, 50, 0.25);
+  }
+  .pricing-card-gold:active {
+    box-shadow: 
+      0 0.6rem 1.8rem rgba(184, 134, 11, 0.3),
+      0 1.2rem 3.6rem rgba(184, 134, 11, 0.2),
+      0 0.3rem 0.8rem rgba(184, 134, 11, 0.25);
+  }
+}
+
 /* Pricing title colors */
 .pricing-blue { 
   background: linear-gradient(135deg, #1976d2 0%, #42a5f5 50%, #64b5f6 100%);
@@ -2345,18 +2394,38 @@ p, span, h1, h2, h3, h4, h5, h6, li, td, th, label,
 .testimonial { 
   padding: 5vh 4.5vh; 
   text-align: center; 
-  min-height: 22vh; 
+  /* Fixed height to prevent content jumping */
+  height: 28vh;
+  min-height: 28vh;
+  max-height: 28vh;
   display: flex; 
   flex-direction: column;
   align-items: center; 
   justify-content: center; 
   overflow: hidden; 
   position: relative;
+  /* Performance: contain layout */
+  contain: layout style;
+}
+@media (max-width: 60rem) {
+  .testimonial {
+    /* Fixed height on mobile */
+    height: 32vh;
+    min-height: 32vh;
+    max-height: 32vh;
+  }
 }
 .testimonial-content {
   width: 100%;
   animation: testimonialFadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   will-change: opacity, transform;
+  /* Prevent layout shifts */
+  contain: layout style;
+  /* Force GPU acceleration */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
 }
 @keyframes testimonialFadeIn {
   from {
@@ -2431,14 +2500,35 @@ p, span, h1, h2, h3, h4, h5, h6, li, td, th, label,
 }
 .testimonial-progress-bar {
   height: 100%;
+  width: 100%;
   background: rgba(0, 0, 0, 0.3);
   border-radius: 0 0 2rem 2rem;
-  /* Performance: optimize animation */
+  /* Performance: optimize animation with transform instead of width */
   transform-origin: left;
-  will-change: width;
-  /* Smooth animation */
-  transition: width 0.1s linear;
+  will-change: transform;
+  /* No transition - using requestAnimationFrame for smooth animation */
+  /* Force GPU acceleration */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  /* Prevent layout shifts */
+  contain: strict;
+  /* Ensure smooth rendering */
+  transform: translateZ(0) scaleX(0);
+  -webkit-transform: translateZ(0) scaleX(0);
 }
+
+/* Additional mobile optimizations for progress bar */
+@media (hover: none) and (pointer: coarse) {
+  .testimonial-progress-bar {
+    /* Reduce will-change on mobile to save resources */
+    will-change: auto;
+  }
+  .testimonial-progress-container {
+    /* Reduce contain on mobile for better performance */
+    contain: layout paint;
+  }
+}
+
 .testimonials-stats {
   display: flex;
   justify-content: center;

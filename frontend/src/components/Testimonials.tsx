@@ -17,41 +17,79 @@ const Testimonials = React.memo(function Testimonials() {
   const [index, setIndex] = React.useState(0);
   const [progress, setProgress] = React.useState(0);
   const [isAnimating, setIsAnimating] = React.useState(true);
+  const animationFrameRef = React.useRef<number | null>(null);
+  const startTimeRef = React.useRef<number | null>(null);
+  const lastUpdateRef = React.useRef<number>(0);
+  const isMobileRef = React.useRef<boolean>(false);
+
+  // Detect mobile device for performance optimization
+  React.useEffect(() => {
+    isMobileRef.current = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || 
+                          (typeof window !== 'undefined' && window.innerWidth < 768);
+  }, []);
 
   const nextTestimonial = React.useCallback(() => {
     setIsAnimating(false);
     setProgress(0);
+    startTimeRef.current = null;
+    lastUpdateRef.current = 0;
+    if (animationFrameRef.current !== null) {
+      cancelAnimationFrame(animationFrameRef.current);
+      animationFrameRef.current = null;
+    }
     setTimeout(() => {
       setIndex((i) => (i + 1) % testimonials.length);
       setIsAnimating(true);
     }, 300); // Small delay for smooth transition
   }, [testimonials.length]);
 
+  // Optimized animation using requestAnimationFrame with throttling for mobile
   React.useEffect(() => {
     if (testimonials.length === 0 || !isAnimating) return;
     
     const duration = 5000; // 5 seconds
-    const interval = 16; // ~60fps
-    const increment = (100 / duration) * interval;
+    // Throttle updates on mobile (update every 2 frames instead of every frame)
+    const throttleInterval = isMobileRef.current ? 2 : 1;
+    let frameCount = 0;
     
-    const timer = setInterval(() => {
-      setProgress((prev) => {
-        const nextProgress = prev + increment;
-        if (nextProgress >= 100) {
-          nextTestimonial();
-          return 0;
-        }
-        return nextProgress;
-      });
-    }, interval);
+    const animate = (timestamp: number) => {
+      if (startTimeRef.current === null) {
+        startTimeRef.current = timestamp;
+        lastUpdateRef.current = timestamp;
+      }
+      
+      const elapsed = timestamp - startTimeRef.current;
+      const newProgress = Math.min((elapsed / duration) * 100, 100);
+      
+      // Throttle updates on mobile for better performance
+      frameCount++;
+      if (frameCount % throttleInterval === 0 || newProgress >= 100) {
+        setProgress(newProgress);
+        lastUpdateRef.current = timestamp;
+      }
+      
+      if (newProgress >= 100) {
+        nextTestimonial();
+      } else {
+        animationFrameRef.current = requestAnimationFrame(animate);
+      }
+    };
+    
+    animationFrameRef.current = requestAnimationFrame(animate);
 
-    return () => clearInterval(timer);
+    return () => {
+      if (animationFrameRef.current !== null) {
+        cancelAnimationFrame(animationFrameRef.current);
+        animationFrameRef.current = null;
+      }
+    };
   }, [isAnimating, nextTestimonial, testimonials.length]);
 
   // Reset progress when index changes
   React.useEffect(() => {
     setProgress(0);
     setIsAnimating(true);
+    startTimeRef.current = null;
   }, [index]);
 
   if (testimonials.length === 0) return null;
@@ -78,8 +116,8 @@ const Testimonials = React.memo(function Testimonials() {
         <div 
           className="testimonial-progress-bar"
           style={{ 
-            width: `${progress}%`,
-            transition: isAnimating ? 'width 0.1s linear' : 'none'
+            transform: `scaleX(${progress / 100})`,
+            transformOrigin: 'left',
           }}
         />
       </div>
