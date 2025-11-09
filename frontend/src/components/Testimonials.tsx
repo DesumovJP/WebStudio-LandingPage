@@ -20,12 +20,26 @@ const Testimonials = React.memo(function Testimonials() {
   const animationFrameRef = React.useRef<number | null>(null);
   const startTimeRef = React.useRef<number | null>(null);
   const lastUpdateRef = React.useRef<number>(0);
-  const isMobileRef = React.useRef<boolean>(false);
+  const [isMobile, setIsMobile] = React.useState(false);
 
-  // Detect mobile device for performance optimization
+  // Detect mobile device - disable timer animation on mobile
   React.useEffect(() => {
-    isMobileRef.current = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || 
-                          (typeof window !== 'undefined' && window.innerWidth < 768);
+    const checkMobile = () => {
+      const mobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || 
+                     (typeof window !== 'undefined' && window.innerWidth < 768);
+      setIsMobile(mobile);
+      if (mobile) {
+        // Disable animation on mobile
+        setIsAnimating(false);
+        if (animationFrameRef.current !== null) {
+          cancelAnimationFrame(animationFrameRef.current);
+          animationFrameRef.current = null;
+        }
+      }
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
   const nextTestimonial = React.useCallback(() => {
@@ -43,13 +57,12 @@ const Testimonials = React.memo(function Testimonials() {
     }, 300); // Small delay for smooth transition
   }, [testimonials.length]);
 
-  // Optimized animation using requestAnimationFrame with throttling for mobile
+  // Optimized animation using requestAnimationFrame - disabled on mobile
   React.useEffect(() => {
-    if (testimonials.length === 0 || !isAnimating) return;
+    // Don't start animation on mobile devices
+    if (isMobile || testimonials.length === 0 || !isAnimating) return;
     
     const duration = 5000; // 5 seconds
-    // Throttle updates on mobile (update every 2 frames instead of every frame)
-    const throttleInterval = isMobileRef.current ? 2 : 1;
     let frameCount = 0;
     
     const animate = (timestamp: number) => {
@@ -61,9 +74,9 @@ const Testimonials = React.memo(function Testimonials() {
       const elapsed = timestamp - startTimeRef.current;
       const newProgress = Math.min((elapsed / duration) * 100, 100);
       
-      // Throttle updates on mobile for better performance
+      // Update every frame for smooth animation
       frameCount++;
-      if (frameCount % throttleInterval === 0 || newProgress >= 100) {
+      if (frameCount % 1 === 0 || newProgress >= 100) {
         setProgress(newProgress);
         lastUpdateRef.current = timestamp;
       }
@@ -83,14 +96,16 @@ const Testimonials = React.memo(function Testimonials() {
         animationFrameRef.current = null;
       }
     };
-  }, [isAnimating, nextTestimonial, testimonials.length]);
+  }, [isMobile, isAnimating, nextTestimonial, testimonials.length]);
 
-  // Reset progress when index changes
+  // Reset progress when index changes - only on desktop
   React.useEffect(() => {
-    setProgress(0);
-    setIsAnimating(true);
-    startTimeRef.current = null;
-  }, [index]);
+    if (!isMobile) {
+      setProgress(0);
+      setIsAnimating(true);
+      startTimeRef.current = null;
+    }
+  }, [index, isMobile]);
 
   if (testimonials.length === 0) return null;
 
@@ -111,16 +126,18 @@ const Testimonials = React.memo(function Testimonials() {
           <p className="testimonial-author">— {t.author}<span className="testimonial-role"> -  {t.role}</span></p>
         </div>
       </div>
-      {/* Progress bar */}
-      <div className="testimonial-progress-container">
-        <div 
-          className="testimonial-progress-bar"
-          style={{ 
-            transform: `scaleX(${progress / 100})`,
-            transformOrigin: 'left',
-          }}
-        />
-      </div>
+      {/* Progress bar - hidden on mobile */}
+      {!isMobile && (
+        <div className="testimonial-progress-container">
+          <div 
+            className="testimonial-progress-bar"
+            style={{ 
+              transform: `scaleX(${progress / 100})`,
+              transformOrigin: 'left',
+            }}
+          />
+        </div>
+      )}
     </Box>
   );
 });
