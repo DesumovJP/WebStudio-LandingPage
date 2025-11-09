@@ -672,8 +672,10 @@ export default function Home() {
             >
               <CloseIcon sx={{ fontSize: '1.8rem', color: 'rgba(0, 0, 0, 0.7)' }} />
             </IconButton>
-            <div className="modal-title">{current?.title}</div>
-            <div className="modal-desc">{current?.desc}</div>
+            <div className="modal-header-sticky">
+              <div className="modal-title">{current?.title}</div>
+              <div className="modal-desc">{current?.desc}</div>
+            </div>
             <div className="modal-grid mt-3">
               <div className="modal-left">
                 {current && (

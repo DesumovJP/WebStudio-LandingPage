@@ -1590,6 +1590,8 @@ a {
   overflow-y: auto; 
   overflow-x: hidden;
   position: relative; 
+  display: flex;
+  flex-direction: column;
 }
 .modal-grid { 
   display: grid; 
@@ -1609,8 +1611,51 @@ a {
     border-radius: 0 !important;
     border: none !important;
   }
-  .modal-content { padding: 4vh; }
+  .modal-content { 
+    padding: 4vh; 
+    padding-top: 5.5vh;
+  }
   .modal-grid { grid-template-columns: 1fr; gap: 4vh; }
+  
+  /* Fix modal header on mobile - make it sticky */
+  .modal-content {
+    position: relative;
+  }
+  
+  .modal-close-btn {
+    position: fixed !important;
+    top: 1.5rem !important;
+    right: 1.5rem !important;
+    z-index: 1000 !important;
+  }
+  
+  /* Make modal title and desc sticky on mobile - wrapper approach */
+  .modal-header-sticky {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: #ffffff;
+    padding-top: 0.5vh;
+    padding-bottom: 2vh;
+    margin-top: -0.5vh;
+    margin-left: -4vh;
+    margin-right: -4vh;
+    padding-left: 4vh;
+    padding-right: 4vh;
+    margin-bottom: 2vh;
+    box-shadow: 0 0.2rem 0.8rem rgba(0, 0, 0, 0.05);
+  }
+  
+  .modal-header-sticky .modal-title {
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+  
+  .modal-header-sticky .modal-desc {
+    margin-top: 2.5vh;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
 }
 .modal-left { 
   width: 100%; 
