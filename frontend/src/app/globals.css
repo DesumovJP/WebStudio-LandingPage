@@ -240,6 +240,7 @@ a {
   display: grid;
   grid-template-columns: 1fr;
   gap: 4.5vh;
+  align-items: stretch;
 }
 
 @media (min-width: 60rem) {
@@ -986,14 +987,24 @@ a {
   overflow: visible;
   /* Performance: optimize transforms */
   will-change: transform;
+  /* Ensure all project cards have equal height */
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 .card.project:hover {
   will-change: auto;
 }
 .card-body { padding: 3vh; }
-/* Project card body - premium spacing */
+/* Project card body - premium spacing with flex layout */
 .project .card-body {
   padding: 4vh 3.5vh;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  /* Ensure minimum height to compensate for short content */
+  min-height: 28vh;
 }
 .card-title { 
   font-weight: 600; 
@@ -1020,6 +1031,7 @@ a {
 .project .card-title-row {
   margin-bottom: 0.8vh;
   align-items: flex-start;
+  flex-shrink: 0;
 }
 .card-title-row .card-title { flex: 1; margin-bottom: 0; }
 .project-metric { 
@@ -1071,6 +1083,8 @@ a {
   font-weight: 400;
   color: rgba(0, 0, 0, 0.72);
   margin-top: 1vh;
+  margin-bottom: auto;
+  flex-shrink: 0;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -1081,7 +1095,9 @@ a {
   display: flex; 
   flex-wrap: wrap; 
   gap: 0.9vh; 
-  margin-top: 2vh; 
+  margin-top: 2vh;
+  margin-bottom: 0;
+  flex-shrink: 0;
 }
 .stack-tag { 
   font-size: clamp(0.7rem, 1.7vw, 0.8rem); 
