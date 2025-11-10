@@ -1629,21 +1629,11 @@ a {
     z-index: 1000 !important;
   }
   
-  /* Make modal title and desc sticky on mobile - wrapper approach */
+  /* Modal header wrapper - no sticky */
   .modal-header-sticky {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: #ffffff;
     padding-top: 0.5vh;
     padding-bottom: 2vh;
-    margin-top: -0.5vh;
-    margin-left: -4vh;
-    margin-right: -4vh;
-    padding-left: 4vh;
-    padding-right: 4vh;
     margin-bottom: 2vh;
-    box-shadow: 0 0.2rem 0.8rem rgba(0, 0, 0, 0.05);
   }
   
   .modal-header-sticky .modal-title {
