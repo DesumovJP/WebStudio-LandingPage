@@ -1616,18 +1616,22 @@ a {
     position: relative;
   }
   
-  .modal-close-btn {
-    position: fixed !important;
-    top: 1.5rem !important;
-    right: 1.5rem !important;
-    z-index: 1000 !important;
-  }
-  
-  /* Modal header wrapper - no sticky */
+  /* Modal header on mobile - stack vertically */
   .modal-header-sticky {
-    padding-top: 0.5vh;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 2vh;
     padding-bottom: 2vh;
     margin-bottom: 2vh;
+  }
+  
+  .modal-header-content {
+    order: 2;
+  }
+  
+  .modal-close-btn {
+    order: 1;
+    align-self: flex-end;
   }
   
   .modal-header-sticky .modal-title {
@@ -1641,6 +1645,23 @@ a {
     padding-bottom: 0;
   }
 }
+
+/* Modal header - general styles */
+.modal-header-sticky {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 2rem;
+  padding-bottom: 3vh;
+  margin-bottom: 3vh;
+  border-bottom: 0.1rem solid rgba(0, 0, 0, 0.06);
+}
+
+.modal-header-content {
+  flex: 1;
+  min-width: 0;
+}
+
 .modal-left { 
   width: 100%; 
   box-sizing: border-box;
@@ -2018,8 +2039,6 @@ a {
     font-size: 1.5rem !important;
   }
   .modal-close-btn {
-    top: 1.5rem !important;
-    right: 1.5rem !important;
     width: 3rem !important;
     height: 3rem !important;
     font-size: 1.5rem !important;
