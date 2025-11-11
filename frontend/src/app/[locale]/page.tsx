@@ -538,7 +538,7 @@ export default function Home() {
             <div className="contact-grid mt-3">
               <div className="contact-image-section">
                 <div className="contact-image-wrap">
-                  <img src={getImageUrl('http://localhost:1337/uploads/BCO_6e6690a6_b492_4e83_85b4_c9e1af011452_e3c5f20d75.png')} alt="Our team" className="contact-hero-img" loading="lazy" decoding="async" />
+                  <img src="https://res.cloudinary.com/deirtcyfx/image/upload/v1762882467/BCO_6e6690a6_b492_4e83_85b4_c9e1af011452_666b046b42.png" alt="Our team" className="contact-hero-img" loading="lazy" decoding="async" />
                 </div>
                 <div className="contact-marketing-content">
                   <img 
