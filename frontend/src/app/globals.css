@@ -3050,36 +3050,40 @@ textarea.mui-reset { resize: none; height: 24vh; min-height: 24vh; max-height: 2
   will-change: contents;
 }
 
-/* Mobile optimizations for accordion animation - disable heavy animations */
+/* Mobile optimizations for accordion animation - faster but smooth */
 @media (hover: none) and (pointer: coarse) {
   .faq-item .MuiCollapse-root {
-    /* Instant animation on mobile for better performance */
-    transition: none !important;
+    /* Faster animation on mobile with optimized easing - 200ms for snappy feel */
+    transition: height 200ms cubic-bezier(0.25, 0.1, 0.25, 1) !important;
+    will-change: height;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    /* Use hardware acceleration */
+    -webkit-transform: translateZ(0);
+    /* Contain layout to prevent reflows */
+    contain: layout;
+  }
+  
+  .faq-item .MuiCollapse-wrapperInner {
+    /* Prevent content jumping */
     will-change: auto;
-    transform: none;
-    backface-visibility: visible;
   }
   
   .faq-item .MuiAccordionDetails-root {
-    /* Simplify contain on mobile */
-    contain: none;
+    /* Lighter containment on mobile */
+    contain: layout style;
     will-change: auto;
   }
   
   .faq-expand-icon {
-    /* Simplify icon animation on mobile */
-    will-change: auto;
-    transition: transform 100ms ease !important;
+    /* Faster icon rotation on mobile */
+    will-change: transform;
+    transition: transform 200ms cubic-bezier(0.25, 0.1, 0.25, 1) !important;
   }
   
   .faq-item .MuiAccordionSummary-expandIconWrapper {
-    will-change: auto;
-    transition: transform 100ms ease !important;
-  }
-  
-  /* Disable all transitions on mobile for FAQ items */
-  .faq-item {
-    transition: none !important;
+    will-change: transform;
+    transition: transform 200ms cubic-bezier(0.25, 0.1, 0.25, 1) !important;
   }
 }
 @media (hover: hover) and (pointer: fine) {
