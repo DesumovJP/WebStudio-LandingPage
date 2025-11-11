@@ -1,11 +1,20 @@
 'use client';
 
+import React from 'react';
 import { usePathname } from 'next/navigation';
 import { locales } from '@/i18n/config';
 
 const localeLabels: Record<string, { flag: string; name: string; short: string }> = {
-  uk: { flag: '🇺🇦', name: 'Українська', short: 'Укр' },
-  en: { flag: '🇬🇧', name: 'English', short: 'Eng' },
+  uk: { 
+    flag: 'https://res.cloudinary.com/deirtcyfx/image/upload/v1762882605/free_icon_flag_14009737_67a888d850.png', 
+    name: 'Українська', 
+    short: 'Укр' 
+  },
+  en: { 
+    flag: 'https://res.cloudinary.com/deirtcyfx/image/upload/v1762882605/free_icon_world_16397183_ee1d90f13b.png', 
+    name: 'English', 
+    short: 'Eng' 
+  },
 };
 
 export default function LanguageSwitcher() {
@@ -19,10 +28,14 @@ export default function LanguageSwitcher() {
     window.location.href = href;
   };
 
+  const getLabel = (locale: string) => {
+    return localeLabels[locale] || { flag: '', name: locale, short: locale };
+  };
+
   return (
     <div className="lang-switch">
       {locales.map((locale, idx) => {
-        const label = localeLabels[locale] || { flag: '', name: locale, short: locale };
+        const label = getLabel(locale);
         return (
           <span key={locale}>
             <button
@@ -32,7 +45,13 @@ export default function LanguageSwitcher() {
               aria-label={label.name}
               title={label.name}
             >
-              <span className="lang-flag">{label.flag}</span>
+              <img 
+                src={label.flag} 
+                alt={label.name} 
+                className="lang-flag" 
+                loading="lazy"
+                decoding="async"
+              />
               <span className="lang-text">{label.short}</span>
             </button>
             {idx < locales.length - 1 ? <span className="lang-sep">/</span> : null}

@@ -275,17 +275,11 @@ a {
 .lang-btn:hover { background: rgba(255,255,255,0.4); color: var(--text); }
 .lang-btn.active { color: var(--text); background: rgba(255,255,255,0.7); border: 0.08rem solid rgba(0,0,0,0.08); }
 .lang-flag { 
-  font-size: 1.1em; 
-  line-height: 1; 
   display: inline-block;
-  /* Improve emoji rendering on Windows */
-  font-family: 'Segoe UI Emoji', 'Segoe UI Symbol', 'Apple Color Emoji', 'Noto Color Emoji', 'EmojiOne Color', 'Android Emoji', sans-serif;
-  /* Fallback for Windows - use smaller font for text fallback */
-  font-variant-emoji: emoji;
-  /* Ensure proper rendering */
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  width: 1.2em;
+  height: 1.2em;
+  object-fit: contain;
+  vertical-align: middle;
 }
 .lang-text { font-size: 0.9em; }
 .lang-sep { color: var(--muted); opacity: 0.4; padding: 0 0.3vh; font-weight: 300; }
