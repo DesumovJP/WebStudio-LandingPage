@@ -322,7 +322,7 @@ a {
   inset: 0;
   width: 100vw;
   height: 100vh;
-  height: 100dvh; /* Dynamic viewport height for mobile */
+  height: calc(var(--vh, 1vh) * 100); /* Fixed viewport height for mobile/Telegram */
   background: rgba(0, 0, 0, 0.5);
   /* No blur on mobile for better performance - only darkening */
   z-index: 1300;
@@ -1600,8 +1600,10 @@ a {
   .modal-paper { 
     width: 100vw !important; 
     max-width: 100vw !important; 
-    height: 100vh !important; 
-    max-height: 100vh !important; 
+    height: 100vh !important;
+    height: calc(var(--vh, 1vh) * 100) !important;
+    max-height: 100vh !important;
+    max-height: calc(var(--vh, 1vh) * 100) !important;
     border-radius: 0 !important;
     border: none !important;
   }
@@ -1964,8 +1966,10 @@ a {
   .image-modal-paper { 
     width: 100vw !important; 
     max-width: 100vw !important; 
-    height: 100vh !important; 
-    max-height: 100vh !important; 
+    height: 100vh !important;
+    height: calc(var(--vh, 1vh) * 100) !important;
+    max-height: 100vh !important;
+    max-height: calc(var(--vh, 1vh) * 100) !important;
   }
   .image-modal-content {
     padding: 1vh;
@@ -1973,6 +1977,7 @@ a {
   .image-modal-img { 
     max-width: calc(100% - 2vh);
     max-height: calc(100vh - 2vh);
+    max-height: calc(var(--vh, 1vh) * 100 - 2vh);
   }
   
   .image-modal-zoom-controls {

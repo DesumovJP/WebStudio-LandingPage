@@ -4,6 +4,7 @@ import { getDictionary } from '@/i18n/getDictionary';
 import { DictProvider } from '@/i18n/DictContext';
 import { env } from '@/config/env';
 import { getProjects } from '@/utils/getProjects';
+import ViewportFixer from '@/components/ViewportFixer';
 
 async function getValidatedLocale(params: Promise<{ locale: string }> | { locale: string }): Promise<Locale> {
   const resolvedParams = params instanceof Promise ? await params : params;
@@ -56,6 +57,10 @@ export async function generateMetadata({
   };
 }
 
+// Disable static generation to ensure fresh data on each request
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
@@ -74,6 +79,17 @@ export default async function LocaleLayout({
   // Fetch projects from Strapi with locale support
   const strapiProjects = await getProjects(locale);
   
+  // Log for debugging (both dev and production)
+  console.log('📦 Layout - Locale:', locale);
+  console.log('📦 Layout - Projects count:', strapiProjects.length);
+  if (strapiProjects.length > 0) {
+    console.log('📦 Layout - First project title:', strapiProjects[0]?.title);
+    console.log('📦 Layout - All projects:', strapiProjects.map(p => ({ title: p.title, documentId: p.documentId })));
+  } else {
+    console.warn('📦 Layout - No projects found for locale:', locale);
+    console.warn('📦 Layout - API_URL:', env.API_URL);
+  }
+  
   // Use only Strapi projects, never fallback to mock projects
   const mergedDict = {
     ...dict,
@@ -81,7 +97,10 @@ export default async function LocaleLayout({
   };
 
   return (
-    <DictProvider value={{ locale, dict: mergedDict }}>{children}</DictProvider>
+    <DictProvider value={{ locale, dict: mergedDict }}>
+      <ViewportFixer />
+      {children}
+    </DictProvider>
   );
 }
 
