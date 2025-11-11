@@ -432,7 +432,7 @@ export default function Home() {
         <Reveal>
           <section className="section" id="work">
             <div className="container">
-              <h2 className="heading-lg">{dict?.sections?.lastProjects ?? '...'}</h2>
+              <h2 className="heading-lg text-center">{dict?.sections?.lastProjects ?? '...'}</h2>
               <div className="grid grid-3 mt-3">
                 {projects.map((p, i) => {
                   // Use mainImage if available, otherwise fallback to first gallery image

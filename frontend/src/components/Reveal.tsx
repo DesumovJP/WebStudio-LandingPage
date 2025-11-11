@@ -12,6 +12,20 @@ export default React.memo(function Reveal({ children, threshold = 0.1, durationM
   const ref = React.useRef<HTMLDivElement | null>(null);
   const [visible, setVisible] = React.useState(false);
   const observerRef = React.useRef<IntersectionObserver | null>(null);
+  const [isMobile, setIsMobile] = React.useState(false);
+
+  // Detect mobile for optimized settings
+  React.useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(
+        /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || 
+        (typeof window !== 'undefined' && window.innerWidth < 768)
+      );
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   React.useEffect(() => {
     if (!ref.current) return;
@@ -24,7 +38,9 @@ export default React.memo(function Reveal({ children, threshold = 0.1, durationM
       return;
     }
 
-    // Optimized IntersectionObserver with rootMargin for earlier trigger
+    // Optimized IntersectionObserver with larger rootMargin on mobile for earlier trigger
+    const rootMargin = isMobile ? '200px' : '50px';
+    
     observerRef.current = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -39,7 +55,7 @@ export default React.memo(function Reveal({ children, threshold = 0.1, durationM
       },
       { 
         threshold,
-        rootMargin: '50px', // Start animation earlier for smoother experience
+        rootMargin, // Larger margin on mobile for content to appear before scrolling into view
       }
     );
     
@@ -51,9 +67,10 @@ export default React.memo(function Reveal({ children, threshold = 0.1, durationM
         observerRef.current = null;
       }
     };
-  }, [threshold, visible]);
+  }, [threshold, visible, isMobile]);
 
-  const duration = durationMs / 1000; // Convert to seconds
+  // Faster animation on mobile for snappier feel
+  const duration = (isMobile ? Math.min(durationMs * 0.7, 300) : durationMs) / 1000;
 
   return (
     <div 
