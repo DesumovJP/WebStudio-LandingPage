@@ -49,6 +49,16 @@ export default function Home() {
   const [activePricingCard, setActivePricingCard] = useState<number | null>(null);
   const [isMobile, setIsMobile] = useState(false);
   
+  // Image zoom states
+  const [zoomLevel, setZoomLevel] = useState(1);
+  const [translateX, setTranslateX] = useState(0);
+  const [translateY, setTranslateY] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [lastTapTime, setLastTapTime] = useState(0);
+  const imageRef = React.useRef<HTMLImageElement>(null);
+  const touchStartRef = React.useRef<{ distance: number; x: number; y: number } | null>(null);
+  
   // Detect mobile device for accordion animation optimization
   React.useEffect(() => {
     const checkMobile = () => {
@@ -98,6 +108,130 @@ export default function Home() {
     const handleNextImage = useCallback(() => {
       setCurrentImageIndex((prev) => (prev < galleryImages.length - 1 ? prev + 1 : 0));
     }, [galleryImages.length]);
+  
+  // Reset zoom when image changes
+  React.useEffect(() => {
+    setZoomLevel(1);
+    setTranslateX(0);
+    setTranslateY(0);
+  }, [currentImageIndex, imageModalOpen]);
+  
+  // Zoom functions
+  const handleZoomIn = useCallback(() => {
+    setZoomLevel((prev) => Math.min(prev + 0.5, 5));
+  }, []);
+  
+  const handleZoomOut = useCallback(() => {
+    setZoomLevel((prev) => {
+      const newZoom = Math.max(prev - 0.5, 1);
+      if (newZoom === 1) {
+        setTranslateX(0);
+        setTranslateY(0);
+      }
+      return newZoom;
+    });
+  }, []);
+  
+  const handleResetZoom = useCallback(() => {
+    setZoomLevel(1);
+    setTranslateX(0);
+    setTranslateY(0);
+  }, []);
+  
+  // Mouse wheel zoom
+  const handleWheel = useCallback((e: React.WheelEvent) => {
+    e.preventDefault();
+    const delta = e.deltaY * -0.01;
+    setZoomLevel((prev) => {
+      const newZoom = Math.min(Math.max(prev + delta, 1), 5);
+      if (newZoom === 1) {
+        setTranslateX(0);
+        setTranslateY(0);
+      }
+      return newZoom;
+    });
+  }, []);
+  
+  // Double click/tap to zoom
+  const handleDoubleClick = useCallback(() => {
+    if (zoomLevel === 1) {
+      setZoomLevel(2);
+    } else {
+      handleResetZoom();
+    }
+  }, [zoomLevel, handleResetZoom]);
+  
+  const handleTap = useCallback(() => {
+    const now = Date.now();
+    if (now - lastTapTime < 300) {
+      handleDoubleClick();
+    }
+    setLastTapTime(now);
+  }, [lastTapTime, handleDoubleClick]);
+  
+  // Mouse drag
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    if (zoomLevel > 1) {
+      setIsDragging(true);
+      setDragStart({ x: e.clientX - translateX, y: e.clientY - translateY });
+    }
+  }, [zoomLevel, translateX, translateY]);
+  
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    if (isDragging && zoomLevel > 1) {
+      setTranslateX(e.clientX - dragStart.x);
+      setTranslateY(e.clientY - dragStart.y);
+    }
+  }, [isDragging, zoomLevel, dragStart]);
+  
+  const handleMouseUp = useCallback(() => {
+    setIsDragging(false);
+  }, []);
+  
+  // Touch pinch-to-zoom
+  const getTouchDistance = (touches: React.TouchList) => {
+    const dx = touches[0].clientX - touches[1].clientX;
+    const dy = touches[0].clientY - touches[1].clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+  };
+  
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    if (e.touches.length === 2) {
+      const distance = getTouchDistance(e.touches);
+      const x = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+      const y = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+      touchStartRef.current = { distance, x, y };
+    } else if (e.touches.length === 1 && zoomLevel > 1) {
+      setIsDragging(true);
+      setDragStart({ x: e.touches[0].clientX - translateX, y: e.touches[0].clientY - translateY });
+    }
+  }, [zoomLevel, translateX, translateY]);
+  
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    if (e.touches.length === 2 && touchStartRef.current) {
+      e.preventDefault();
+      const distance = getTouchDistance(e.touches);
+      const scale = distance / touchStartRef.current.distance;
+      setZoomLevel((prev) => {
+        const newZoom = Math.min(Math.max(prev * scale, 1), 5);
+        if (newZoom === 1) {
+          setTranslateX(0);
+          setTranslateY(0);
+        }
+        return newZoom;
+      });
+      touchStartRef.current.distance = distance;
+    } else if (e.touches.length === 1 && isDragging && zoomLevel > 1) {
+      e.preventDefault();
+      setTranslateX(e.touches[0].clientX - dragStart.x);
+      setTranslateY(e.touches[0].clientY - dragStart.y);
+    }
+  }, [isDragging, zoomLevel, dragStart]);
+  
+  const handleTouchEnd = useCallback(() => {
+    setIsDragging(false);
+    touchStartRef.current = null;
+  }, []);
 
     // Contact form state
     const [formData, setFormData] = useState({
@@ -760,13 +894,71 @@ export default function Home() {
             </IconButton>
             {galleryImages.length > 0 && (
               <>
-                <img 
-                  src={galleryImages[currentImageIndex]} 
-                  alt={`${current?.title} - Image ${currentImageIndex + 1}`}
-                  className="image-modal-img"
-                  loading="eager"
-                  decoding="sync"
-                />
+                <div 
+                  className="image-modal-container"
+                  onWheel={handleWheel}
+                  onMouseMove={handleMouseMove}
+                  onMouseUp={handleMouseUp}
+                  onMouseLeave={handleMouseUp}
+                  onTouchMove={handleTouchMove}
+                  onTouchEnd={handleTouchEnd}
+                >
+                  <img 
+                    ref={imageRef}
+                    src={galleryImages[currentImageIndex]} 
+                    alt={`${current?.title} - Image ${currentImageIndex + 1}`}
+                    className="image-modal-img"
+                    loading="eager"
+                    decoding="sync"
+                    style={{
+                      transform: `scale(${zoomLevel}) translate(${translateX / zoomLevel}px, ${translateY / zoomLevel}px)`,
+                      cursor: zoomLevel > 1 ? (isDragging ? 'grabbing' : 'grab') : 'zoom-in',
+                      transition: isDragging ? 'none' : 'transform 0.2s ease-out'
+                    }}
+                    onMouseDown={handleMouseDown}
+                    onDoubleClick={handleDoubleClick}
+                    onClick={handleTap}
+                    onTouchStart={handleTouchStart}
+                  />
+                </div>
+                
+                {/* Zoom controls */}
+                <div className="image-modal-zoom-controls">
+                  <button 
+                    className="zoom-btn" 
+                    onClick={handleZoomOut}
+                    disabled={zoomLevel <= 1}
+                    aria-label="Zoom out"
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <circle cx="11" cy="11" r="8"/>
+                      <path d="M21 21l-4.35-4.35"/>
+                      <line x1="8" y1="11" x2="14" y2="11"/>
+                    </svg>
+                  </button>
+                  <button 
+                    className="zoom-btn" 
+                    onClick={handleResetZoom}
+                    disabled={zoomLevel === 1}
+                    aria-label="Reset zoom"
+                  >
+                    <span className="zoom-level">{Math.round(zoomLevel * 100)}%</span>
+                  </button>
+                  <button 
+                    className="zoom-btn" 
+                    onClick={handleZoomIn}
+                    disabled={zoomLevel >= 5}
+                    aria-label="Zoom in"
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <circle cx="11" cy="11" r="8"/>
+                      <path d="M21 21l-4.35-4.35"/>
+                      <line x1="11" y1="8" x2="11" y2="14"/>
+                      <line x1="8" y1="11" x2="14" y2="11"/>
+                    </svg>
+                  </button>
+                </div>
+                
                 <button className="image-modal-nav image-modal-nav-prev" onClick={handlePrevImage} aria-label="Previous image">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M15 18l-6-6 6-6"/></svg>
                 </button>
