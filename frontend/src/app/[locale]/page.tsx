@@ -780,34 +780,34 @@ export default function Home() {
         <Dialog open={open} onClose={handleClose} maxWidth={false} disableScrollLock={false} PaperProps={{ className: "modal-paper" }} BackdropProps={{ sx: { backdropFilter: 'blur(1rem)', backgroundColor: 'rgba(0,0,0,0.18)' } }}>
           <div className="modal-content">
             <div className="modal-header-sticky">
-              <div className="modal-header-content">
+              <div className="modal-title-row">
                 <div className="modal-title">{current?.title}</div>
-                <div className="modal-desc">{current?.desc}</div>
+                <IconButton 
+                  onClick={handleClose} 
+                  className="modal-close-btn"
+                  aria-label="close"
+                  sx={{ 
+                    background: 'rgba(255, 255, 255, 0.85)',
+                    backdropFilter: 'blur(1.2rem) saturate(180%)',
+                    WebkitBackdropFilter: 'blur(1.2rem) saturate(180%)',
+                    width: '3.8rem',
+                    height: '3.8rem',
+                    fontSize: '1.75rem',
+                    border: '0.1rem solid rgba(255, 255, 255, 0.3)',
+                    boxShadow: '0 0.2rem 0.8rem rgba(0, 0, 0, 0.08), inset 0 0.1rem 0.2rem rgba(255, 255, 255, 0.6)',
+                    flexShrink: 0,
+                    '&:hover': { 
+                      background: 'rgba(255, 255, 255, 0.95)', 
+                      transform: 'scale(1.08)',
+                      boxShadow: '0 0.4rem 1.2rem rgba(0, 0, 0, 0.12), inset 0 0.1rem 0.2rem rgba(255, 255, 255, 0.7)',
+                    },
+                    transition: 'all 250ms cubic-bezier(0.4, 0, 0.2, 1)'
+                  }}
+                >
+                  <CloseIcon sx={{ fontSize: '1.8rem', color: 'rgba(0, 0, 0, 0.7)' }} />
+                </IconButton>
               </div>
-              <IconButton 
-                onClick={handleClose} 
-                className="modal-close-btn"
-                aria-label="close"
-                sx={{ 
-                  background: 'rgba(255, 255, 255, 0.85)',
-                  backdropFilter: 'blur(1.2rem) saturate(180%)',
-                  WebkitBackdropFilter: 'blur(1.2rem) saturate(180%)',
-                  width: '3.8rem',
-                  height: '3.8rem',
-                  fontSize: '1.75rem',
-                  border: '0.1rem solid rgba(255, 255, 255, 0.3)',
-                  boxShadow: '0 0.2rem 0.8rem rgba(0, 0, 0, 0.08), inset 0 0.1rem 0.2rem rgba(255, 255, 255, 0.6)',
-                  flexShrink: 0,
-                  '&:hover': { 
-                    background: 'rgba(255, 255, 255, 0.95)', 
-                    transform: 'scale(1.08)',
-                    boxShadow: '0 0.4rem 1.2rem rgba(0, 0, 0, 0.12), inset 0 0.1rem 0.2rem rgba(255, 255, 255, 0.7)',
-                  },
-                  transition: 'all 250ms cubic-bezier(0.4, 0, 0.2, 1)'
-                }}
-              >
-                <CloseIcon sx={{ fontSize: '1.8rem', color: 'rgba(0, 0, 0, 0.7)' }} />
-              </IconButton>
+              <div className="modal-desc">{current?.desc}</div>
             </div>
             <div className="modal-grid mt-3">
               <div className="modal-left">
@@ -965,12 +965,6 @@ export default function Home() {
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 18l6-6-6-6"/></svg>
                 </button>
                 <div className="image-modal-counter">{currentImageIndex + 1} / {galleryImages.length}</div>
-                <div className="image-modal-hint">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="rotate-icon">
-                    <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
-                    <line x1="12" y1="18" x2="12.01" y2="18"/>
-                  </svg>
-                </div>
               </>
             )}
           </div>
