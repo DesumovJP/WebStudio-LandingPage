@@ -64,6 +64,36 @@ body.mobile-menu-open {
   overflow: hidden;
 }
 
+/* Telegram WebView specific fixes - disable problematic features */
+.telegram-webview * {
+  /* Disable hardware acceleration to prevent jumps */
+  transform: none !important;
+  will-change: auto !important;
+  -webkit-transform: none !important;
+  backface-visibility: visible !important;
+}
+
+/* Keep essential transforms for specific elements in Telegram */
+.telegram-webview .mobile-menu-overlay,
+.telegram-webview .pricing-card:hover,
+.telegram-webview .image-modal-img {
+  transform: revert !important;
+  will-change: revert !important;
+}
+
+/* Stable scrolling in Telegram WebView */
+.telegram-webview body {
+  position: relative;
+  overflow: auto;
+  min-height: 100%;
+  overscroll-behavior: none;
+}
+
+.telegram-webview html {
+  min-height: 100%;
+  height: 100%;
+}
+
 body {
   background: var(--bg);
   color: var(--text);
